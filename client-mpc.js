@@ -37,13 +37,8 @@
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
     var promise = jiff_instance.receive_open_array(all_parties, config.compute_parties);
-    console.log('got here');
-    promise.then(function (value) {
-      var results = {
-        second_highest: value[0],
-        second_higest_party: value[1]
-      };
-      console.log('hello', results);
+
+    promise.then(function () {
       jiff_instance.disconnect(true, true);
     });
 

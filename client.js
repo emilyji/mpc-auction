@@ -53,17 +53,16 @@ function submit() {
     var promise = mpc.compute(input);
     promise.then(function (opened_array) {
       var results = {
-        second_highest: opened_array[0],
-        second_higest_party: opened_array[1]
+        second_highest_bid: opened_array[0],
+        highest_party: opened_array[1]
       };
-      console.log('hello', results);
       handleResult(results);
     });
   }
 }
 
 function handleResult(results) {
-  $('#output').append('<p>The second highest bid is ' + results.second_highest
-                       + ' and the winner is ' + results.second_higest_party + '.</p>');
+  $('#output').append('<p>The second highest bid is ' + results.second_highest_bid
+                       + ' and the winner is ' + results.highest_party + '.</p>');
   $('#button').attr('disabled', false);
 }
