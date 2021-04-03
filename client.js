@@ -51,11 +51,19 @@ function submit() {
     $('#output').append('<p>Starting...</p>');
     // eslint-disable-next-line no-undef
     var promise = mpc.compute(input);
-    promise.then(handleResult);
+    promise.then(function (opened_array) {
+      var results = {
+        second_highest: opened_array[0],
+        second_higest_party: opened_array[1]
+      };
+      console.log('hello', results);
+      handleResult(results);
+    });
   }
 }
 
-function handleResult(result) {
-  $('#output').append('<p>Result is: ' + result + '</p>');
+function handleResult(results) {
+  $('#output').append('<p>The second highest bid is ' + results.second_highest
+                       + ' and the winner is ' + results.second_higest_party + '.</p>');
   $('#button').attr('disabled', false);
 }

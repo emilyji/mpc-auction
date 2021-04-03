@@ -10,6 +10,8 @@
   exports.connect = function (hostname, computation_id, options, _config) {
     config = _config;
 
+    all_parties = config.compute_parties.concat(config.input_parties);
+
     var opt = Object.assign({}, options);
     opt['crypto_provider'] = config.preprocessing === false;
     opt['initialization'] = { role: 'input' };
@@ -34,8 +36,14 @@
 
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
-    var promise = jiff_instance.receive_open(config.compute_parties);
-    promise.then(function () {
+    var promise = jiff_instance.receive_open_array(all_parties, config.compute_parties);
+    console.log('got here');
+    promise.then(function (value) {
+      var results = {
+        second_highest: value[0],
+        second_higest_party: value[1]
+      };
+      console.log('hello', results);
       jiff_instance.disconnect(true, true);
     });
 

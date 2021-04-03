@@ -43,13 +43,34 @@ var compute = function () {
     // we will receive shares of inputs from all the input_parties.
     var shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
 
-    var sum = shares[config.input_parties[0]];
+    // Find highest bid
+    var highest_bid = shares[config.input_parties[0]];
+    var highest_party = config.input_parties[0];
     for (var i = 1; i < config.input_parties.length; i++) {
-      var p = config.input_parties[i];
-      sum = sum.sadd(shares[p]);
+      var ip = config.input_parties[i];
+      var cmp = highest_bid.gt(shares[ip]);
+      highest_bid = cmp.if_else(highest_bid, shares[ip]);
+      highest_party = cmp.if_else(highest_party, ip);
     }
 
-    jiffClient.open(sum, all_parties).then(function (output) {
+    // Find second highest bid
+    var cmp_first_two = shares[config.input_parties[0]].eq(highest_bid);
+    var second_highest_bid = cmp_first_two.if_else(shares[config.input_parties[1]], shares[config.input_parties[0]]);
+    var second_highest_party = cmp_first_two.if_else(config.input_parties[1], config.input_parties[0]);
+    for (var j = 1; j < config.input_parties.length; j++) {
+      var ip = config.input_parties[j];
+      var cmp_gt = second_highest_bid.gt(shares[ip]);
+      var temp = cmp_gt.if_else(second_highest_bid, shares[ip]);
+      var cmp_eq = temp.eq(highest_bid);
+      second_highest_bid = cmp_eq.if_else(second_highest_bid, temp);
+      second_highest_party = cmp_eq.if_else(second_highest_party, ip);
+    }
+
+    var results = [second_highest_bid, highest_party];
+
+    var promise = jiffClient.open_array(results, all_parties);
+
+    promise.then(function (output) {
       console.log('Final output is: ', output);
       jiffClient.disconnect(true, true);
     });
