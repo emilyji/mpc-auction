@@ -15,9 +15,42 @@ var http = require('http').Server(app);
 var path = require('path');
 
 // body parser to handle json data
-var bodyParser  = require('body-parser');
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// MongoDB setup
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+var passportLocalMongoose = require('passport-local-mongoose');
+var User = require('./models/user');
+
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect('mongodb://localhost/test');
+
+// app.set('view engine', 'ejs');
+
+app.use(require('express-session')({
+  secret: 'temp',
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+  
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  },  
+  User.authenticate()
+));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Read configuration
 var config = './config.json';
@@ -78,6 +111,56 @@ app.get('/config.js', function (req, res) {
   res.send(str);
 });
 
+// Registration form
+app.get('/', function (req,res) {
+  res.sendFile(path.join(__dirname, './views/register.html'));
+});
+
+// Auction bidding page
+app.get('/auction', isLoggedIn, function (req, res) {
+  res.sendFile(path.join(__dirname, './client.html'));
+});
+
+// Handling user registration
+app.post('/', function (req, res) {
+  var email = req.body.email;
+  var password = req.body.password;
+  User.register(new User({ username: email }), password, function (err, user) {
+    if (err) {
+      console.log(err);
+      return res.sendFile(path.join(__dirname, './views/register.html'));
+    }
+  
+    passport.authenticate("local")(
+      req, res, function () {
+      res.sendFile(path.join(__dirname, './views/signup_success.html'));
+    });
+  });
+});
+
+//Showing login page
+app.get('/login', function (req, res) {
+  res.sendFile(path.join(__dirname, './views/login.html'));
+});
+
+//Handling user login
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/auction',
+  failureRedirect: '/login'
+}), function (req, res) {
+});
+  
+// //Handling user logout 
+// app.get('/logout', function (req, res) {
+//   req.logout();
+//   res.redirect('/');
+// });
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect('/login');
+}
+
 app.use('/', express.static(__dirname));
 app.use('/dist', express.static(path.join(__dirname, 'jiff', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, 'jiff', 'lib', 'ext')));
@@ -85,7 +168,7 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('** To provide inputs, direct your browser to http://localhost:8080/demos/mpc-as-a-service/client.html.');
+console.log('** To provide inputs, direct your browser to http://localhost:8080/client.html.');
 console.log('** To run a compute party, use the command line and run node compute-party.js [configuration-file] [computation-id]');
 console.log('All compute parties must be running before input parties can connect, an input party can leave');
 console.log('any time after it submits its input.');
