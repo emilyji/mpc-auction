@@ -99,8 +99,8 @@ var options = {
 };
 
 // Create the server
-var JIFFServer = require('./jiff/lib/jiff-server');
-var jiffRestAPIServer = require('./jiff/lib/ext/jiff-server-restful.js');
+var JIFFServer = require('../jiff/lib/jiff-server');
+var jiffRestAPIServer = require('../jiff/lib/ext/jiff-server-restful.js');
 var jiffServer = new JIFFServer(http, options);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
@@ -113,12 +113,13 @@ app.get('/config.js', function (req, res) {
 
 // Registration form
 app.get('/', function (req,res) {
-  res.sendFile(path.join(__dirname, './views/register.html'));
+  res.sendFile(path.join(__dirname, '../client/views/register.html'));
 });
 
 // Auction bidding page
 app.get('/auction', isLoggedIn, function (req, res) {
-  res.sendFile(path.join(__dirname, './client.html'));
+  // console.log("hello", req.username);
+  res.sendFile(path.join(__dirname, '../client/views/auction.html'));
 });
 
 // Handling user registration
@@ -128,19 +129,31 @@ app.post('/', function (req, res) {
   User.register(new User({ username: email }), password, function (err, user) {
     if (err) {
       console.log(err);
-      return res.sendFile(path.join(__dirname, './views/register.html'));
+      return res.sendFile(path.join(__dirname, '../client/views/register.html'));
     }
   
     passport.authenticate("local")(
       req, res, function () {
-      res.sendFile(path.join(__dirname, './views/signup_success.html'));
+      res.sendFile(path.join(__dirname, '../client/views/signup_success.html'));
     });
   });
 });
 
+// app.post('/auction', function (req, res) {
+//   if (req.body.action === 'sendUserID') {
+//     console.log('hello 1', req.username);
+//     console.log(req.body);
+//   } else if (req.body.action === 'sendWinnerID') {
+//     console.log('hello 2', req.username);
+//     console.log(req.body);
+//   } else {
+//     console.log('something is wrong');
+//   }
+// });
+
 //Showing login page
 app.get('/login', function (req, res) {
-  res.sendFile(path.join(__dirname, './views/login.html'));
+  res.sendFile(path.join(__dirname, '../client/views/login.html'));
 });
 
 //Handling user login
@@ -149,26 +162,19 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login'
 }), function (req, res) {
 });
-  
-// //Handling user logout 
-// app.get('/logout', function (req, res) {
-//   req.logout();
-//   res.redirect('/');
-// });
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/login');
 }
 
-app.use('/', express.static(__dirname));
-app.use('/dist', express.static(path.join(__dirname, 'jiff', 'dist')));
-app.use('/lib/ext', express.static(path.join(__dirname, 'jiff', 'lib', 'ext')));
+app.use('/', express.static(path.join(__dirname, '..', 'client')));
+app.use('/dist', express.static(path.join(__dirname, '..', 'jiff', 'dist')));
+app.use('/lib/ext', express.static(path.join(__dirname, '..', 'jiff', 'lib', 'ext')));
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('** To provide inputs, direct your browser to http://localhost:8080/client.html.');
 console.log('** To run a compute party, use the command line and run node compute-party.js [configuration-file] [computation-id]');
 console.log('All compute parties must be running before input parties can connect, an input party can leave');
 console.log('any time after it submits its input.');

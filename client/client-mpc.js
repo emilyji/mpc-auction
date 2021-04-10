@@ -1,9 +1,9 @@
 (function (exports, node) {
   if (node) {
     // eslint-disable-next-line no-undef
-    JIFFClient = require('./jiff/lib/jiff-client.js');
+    JIFFClient = require('../jiff/lib/jiff-client.js');
     // eslint-disable-next-line no-undef
-    jiff_restAPI = require('./jiff/lib/ext/jiff-client-restful.js');
+    jiff_restAPI = require('../jiff/lib/ext/jiff-client-restful.js');
   }
 
   var __jiff_instance, config;

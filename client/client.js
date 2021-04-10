@@ -35,6 +35,7 @@ function connect() {
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
     $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
+    sendUserID(jiff['id']);
   });
 }
 
@@ -53,10 +54,11 @@ function submit() {
     var promise = mpc.compute(input);
     promise.then(function (opened_array) {
       var results = {
-        second_highest_bid: opened_array[0],
-        highest_party: opened_array[1]
+        'second_highest_bid': opened_array[0],
+        'highest_party': opened_array[1]
       };
       handleResult(results);
+      sendWinnerID(results);
     });
   }
 }
@@ -65,4 +67,25 @@ function handleResult(results) {
   $('#output').append('<p>The second highest bid is ' + results.second_highest_bid
                        + ' and the winner is ' + results.highest_party + '.</p>');
   $('#button').attr('disabled', false);
+}
+
+function sendUserID(ID) {
+  var params = {
+    'party_id': ID,
+    'action': 'sendUserID'
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://localhost:8080/auction', true);
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+  xhr.send(JSON.stringify(params));
+  console.log("got here 1");
+}
+
+function sendWinnerID(results) {
+  var params = results;
+  params.action = 'sendWinnerID'
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://localhost:8080/auction', true);
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+  xhr.send(JSON.stringify(params));
 }

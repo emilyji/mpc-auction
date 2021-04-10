@@ -1,2 +1,2 @@
-# secure-mpc-auction
+# mpc-auction
 CPSC 490 Senior Project
