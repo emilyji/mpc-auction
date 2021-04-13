@@ -25,14 +25,15 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var passportLocalMongoose = require('passport-local-mongoose');
 var User = require('./models/user');
+var queries = require('./models/queries');
+
+var emailHelper = require('./scripts/emailHelper');
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.connect('mongodb://localhost/test');
-
-// app.set('view engine', 'ejs');
 
 app.use(require('express-session')({
   secret: 'temp',
@@ -104,6 +105,13 @@ var jiffRestAPIServer = require('../jiff/lib/ext/jiff-server-restful.js');
 var jiffServer = new JIFFServer(http, options);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
+var nunjucks = require('nunjucks');
+nunjucks.configure(path.join(__dirname, '/../client/'), {
+  autoescape: true,
+  express: app
+});
+app.set('view engine', 'html');
+
 // Serve static files.
 app.get('/config.js', function (req, res) {
   var str = 'var config = \'' + JSON.stringify(config) + '\';\n';
@@ -113,13 +121,13 @@ app.get('/config.js', function (req, res) {
 
 // Registration form
 app.get('/', function (req,res) {
-  res.sendFile(path.join(__dirname, '../client/views/register.html'));
+  // res.sendFile(path.join(__dirname, '../client/views/register.html'));
+  res.render(path.join(__dirname, '../client/views/register'));
 });
 
 // Auction bidding page
 app.get('/auction', isLoggedIn, function (req, res) {
-  // console.log("hello", req.username);
-  res.sendFile(path.join(__dirname, '../client/views/auction.html'));
+  res.render(path.join(__dirname, '../client/views/auction'), {email: req.user.username});
 });
 
 // Handling user registration
@@ -139,17 +147,21 @@ app.post('/', function (req, res) {
   });
 });
 
-// app.post('/auction', function (req, res) {
-//   if (req.body.action === 'sendUserID') {
-//     console.log('hello 1', req.username);
-//     console.log(req.body);
-//   } else if (req.body.action === 'sendWinnerID') {
-//     console.log('hello 2', req.username);
-//     console.log(req.body);
-//   } else {
-//     console.log('something is wrong');
-//   }
-// });
+app.post('/auction', function (req, res) {
+  if (req.body.action === 'updateInputPartyID') {
+    var promise = queries.updatePartyID(req.body.party_id, req.body.user);
+    promise.then(function () {
+      console.log('successfully updated party ID of user', req.body.user);
+    });
+  } else if (req.body.action === 'sendAuctionWinner') {
+    emailHelper.emailAuctionWinner(req.body.winner_ID, req.body.second_highest_bid);
+    console.log('successfully emailed the auction winner');
+    emailHelper.emailAuctionLosers(req.body.winner_ID);
+    console.log('successfully emailed the auction losers');
+  } else {
+    console.log('something is wrong');
+  }
+});
 
 //Showing login page
 app.get('/login', function (req, res) {

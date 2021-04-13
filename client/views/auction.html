@@ -1,13 +1,6 @@
-<!-- Basic UI for running the demo in the browser -->
-
 <html>
 <head>
   <title>Compute auction winner with MPC</title>
-  <style>
-    .error {
-      color: #FF0000;
-    }
-  </style>
   <script src="/config.js"></script>
 
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -21,6 +14,7 @@
   <script type="text/javascript" src="../client-mpc.js"></script>
 </head>
 <body>
+  <p hidden id="email">{{ email }}</p>
   <h1>Connect JIFF</h1>
   <label for="computation_id">Computation ID</label><input id="computation_id" value="test"/><br/><br/>
   <button id="connectButton" onclick="connect();">Connect</button>

@@ -35,7 +35,8 @@ function connect() {
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
     $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
-    sendUserID(jiff['id']);
+    var email = $('#email').html();
+    updateInputPartyID(jiff['id'], email);
   });
 }
 
@@ -55,24 +56,25 @@ function submit() {
     promise.then(function (opened_array) {
       var results = {
         'second_highest_bid': opened_array[0],
-        'highest_party': opened_array[1]
+        'winner_ID': opened_array[1]
       };
       handleResult(results);
-      sendWinnerID(results);
+      sendAuctionWinner(results);
     });
   }
 }
 
 function handleResult(results) {
   $('#output').append('<p>The second highest bid is ' + results.second_highest_bid
-                       + ' and the winner is ' + results.highest_party + '.</p>');
+                       + ' and the winner is ' + results.winner_ID + '.</p>');
   $('#button').attr('disabled', false);
 }
 
-function sendUserID(ID) {
+function updateInputPartyID(ID, email) {
   var params = {
     'party_id': ID,
-    'action': 'sendUserID'
+    'user': email,
+    'action': 'updateInputPartyID'
   }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'http://localhost:8080/auction', true);
@@ -81,9 +83,9 @@ function sendUserID(ID) {
   console.log("got here 1");
 }
 
-function sendWinnerID(results) {
+function sendAuctionWinner(results) {
   var params = results;
-  params.action = 'sendWinnerID'
+  params.action = 'sendAuctionWinner'
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'http://localhost:8080/auction', true);
   xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');

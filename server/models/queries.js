@@ -13,38 +13,71 @@ module.exports = {};
 // get total number of users that registered for the auction
 module.exports.totalRegisteredUsers = function () {
   return new Promise(function (resolve, reject) {
-    User.find().countDocuments(function (err, count) {
+    User.find().countDocuments(function (err, data) {
       if (err) {
         reject(err);
       } else {
-        resolve(count);
+        resolve(data);
       }
     });
   });
 };
 
-// get list of registered user objects
+// get list of registered user emails
 module.exports.registeredUserEmails = function () {
   return new Promise(function (resolve, reject) {
-    User.find({}, 'username', function (err, users) {
+    User.find({}, 'username', function (err, data) {
       if (err) {
         reject(err);
       } else {
-        resolve(users);
+        let emails = [];
+        for (var d of data) {
+          emails.push(d.username);
+        }
+        resolve(emails);
       }
     });
   });
 };
 
 // add party ID to a specific user
-module.exports.updatePartyID = function(ID, email) {
+module.exports.updatePartyID = function(party_id, email) {
   return new Promise(function (resolve, reject) {
-    User.update({ username: email }, { $set: {party_id: ID} }, function (err) {
+    User.updateOne({ username: email }, { $set: {party_id: party_id} }, function (err) {
       if (err) {
         reject(err);
       } else {
-        console.log('got here');
         resolve();
+      }
+    });
+  });
+}
+
+// find user by party ID
+module.exports.getUserByPartyID = function(party_id) {
+  return new Promise(function (resolve, reject) {
+    User.findOne({ party_id: party_id }, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+// get list of emails of users with a party_id does not equal the function argument
+module.exports.getUserEmailsPartyIDNE = function(party_id) {
+  return new Promise(function (resolve, reject) {
+    User.find({ party_id: { $ne: party_id } }, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        let emails = [];
+        for (var d of data) {
+          emails.push(d.username);
+        }
+        resolve(emails);
       }
     });
   });
