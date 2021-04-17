@@ -7,12 +7,16 @@
  * will be used.
  */
 console.log('Command line arguments: [/path/to/configuration/file.json]');
-
+var fs = require('fs');
+var path = require('path');
 // Server setup
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var path = require('path');
+var http = require('http').createServer(app);
+var https = require('https').createServer({
+  key: fs.readFileSync('./localhost-key.pem'),
+  cert: fs.readFileSync('./localhost.pem'),
+}, app);
 
 // body parser to handle json data
 var bodyParser = require('body-parser');
@@ -183,8 +187,12 @@ function isLoggedIn(req, res, next) {
 app.use('/', express.static(path.join(__dirname, '..', 'client')));
 app.use('/dist', express.static(path.join(__dirname, '..', 'jiff', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', 'jiff', 'lib', 'ext')));
+
 http.listen(8080, function () {
   console.log('listening on *:8080');
+});
+https.listen(8443, function () {
+  console.log('listening on *:8443');
 });
 
 console.log('** To run a compute party, use the command line and run node compute-party.js [configuration-file] [computation-id]');

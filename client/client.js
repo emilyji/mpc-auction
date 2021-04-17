@@ -20,8 +20,8 @@ function connect() {
   if (port == null || port === '') {
     port = '80';
   }
-  if (!(hostname.startsWith('http://') || hostname.startsWith('https://'))) {
-    hostname = 'http://' + hostname;
+  if (!(hostname.startsWith('https://'))) {
+    hostname = 'https://' + hostname;
   }
   if (hostname.endsWith('/')) {
     hostname = hostname.substring(0, hostname.length-1);
@@ -31,6 +31,7 @@ function connect() {
   }
 
   hostname = hostname + ':' + port;
+  console.log(hostname);
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
@@ -77,7 +78,7 @@ function updateInputPartyID(ID, email) {
     'action': 'updateInputPartyID'
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:8080/auction', true);
+  xhr.open('POST', 'https://localhost:8443/auction', true);
   xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   xhr.send(JSON.stringify(params));
   console.log("got here 1");
@@ -87,7 +88,7 @@ function sendAuctionWinner(results) {
   var params = results;
   params.action = 'sendAuctionWinner'
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:8080/auction', true);
+  xhr.open('POST', 'https://localhost:8443/auction', true);
   xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   xhr.send(JSON.stringify(params));
 }
