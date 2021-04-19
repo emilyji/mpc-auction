@@ -185,7 +185,12 @@ app.post('/', function (req, res) {
 
 // Auction bidding page
 app.get('/auction', isLoggedIn, function (req, res) {
-  res.render(path.join(__dirname, '../client/views/auction'), {email: req.user.username});
+  var promise = queries.getCurrentAuctionInfo();
+  promise.then(function (data) {
+    res.render(path.join(__dirname, '../client/views/auction'), 
+              {email: req.user.username, title: data.title, description: data.description,
+               auction_id: data._id, end: data.auction_end});
+  });
 });
 
 app.post('/auction', function (req, res) {
