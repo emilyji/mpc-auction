@@ -9,6 +9,8 @@
 console.log('Command line arguments: [/path/to/configuration/file.json]');
 var fs = require('fs');
 var path = require('path');
+const {v4 : uuidv4} = require('uuid');
+
 // Server setup
 var express = require('express');
 var app = express();
@@ -123,15 +125,41 @@ app.get('/config.js', function (req, res) {
   res.send(str);
 });
 
-// Registration form
-app.get('/', function (req,res) {
-  // res.sendFile(path.join(__dirname, '../client/views/register.html'));
-  res.render(path.join(__dirname, '../client/views/register'));
+app.get('/create-auction', function (req, res) {
+  res.render(path.join(__dirname, '../client/views/create'));
+}); 
+
+app.post('/create-auction', function (req, res) {
+  const auctionID = uuidv4();
+  console.log(req.body);
+  var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
+                                          req.body.auctionRegistrationDeadline, null);
+  promise.then(function () {
+    console.log('successfully added auction info to database', req.body);
+    res.redirect('/manage');
+  });
 });
 
-// Auction bidding page
-app.get('/auction', isLoggedIn, function (req, res) {
-  res.render(path.join(__dirname, '../client/views/auction'), {email: req.user.username});
+app.get('/manage', function (req, res) {
+  res.render(path.join(__dirname, '../client/views/manage'));
+});
+
+// Registration form
+app.get('/', function (req,res) {
+  var promise = queries.totalAuctions();
+  promise.then(function (count) {
+    if (count === 0) {
+      res.render(path.join(__dirname, '../client/views/register'));
+    }
+    else {
+      var promise = queries.getCurrentAuctionInfo();
+      promise.then(function (data) {
+        console.log(data);
+        res.render(path.join(__dirname, '../client/views/register'), 
+                  {title: data.title, description: data.description, deadline: data.registration_deadline});
+      })
+    }
+  });
 });
 
 // Handling user registration
@@ -149,6 +177,11 @@ app.post('/', function (req, res) {
       res.sendFile(path.join(__dirname, '../client/views/signup_success.html'));
     });
   });
+});
+
+// Auction bidding page
+app.get('/auction', isLoggedIn, function (req, res) {
+  res.render(path.join(__dirname, '../client/views/auction'), {email: req.user.username});
 });
 
 app.post('/auction', function (req, res) {

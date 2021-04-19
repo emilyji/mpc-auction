@@ -7,6 +7,7 @@ db.once('open', function() {
 });
 
 const User = require('./user.js');
+const Auction = require('./auction.js');
 
 module.exports = {};
 
@@ -78,6 +79,51 @@ module.exports.getUserEmailsPartyIDNE = function(party_id) {
           emails.push(d.username);
         }
         resolve(emails);
+      }
+    });
+  });
+}
+
+module.exports.insertAuctionInfo = function (auction_id, title, description, registration_deadline, submission_deadline) {
+  var auctionInfo = new Auction({
+    _id: auction_id,
+    title: title,
+    description: description,
+    registration_deadline: registration_deadline,
+    submission_deadline: submission_deadline,
+    status: 'REGISTRATION_START',
+  });
+
+  return new Promise(function (resolve, reject) {
+    auctionInfo.save(function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+module.exports.totalAuctions = function () {
+  return new Promise(function (resolve, reject) {
+    Auction.find().countDocuments(function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+ 
+module.exports.getCurrentAuctionInfo = function () {
+  return new Promise(function (resolve, reject) {
+    Auction.findOne({ status: 'REGISTRATION_START' }, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
       }
     });
   });

@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Secure Auction Creation</title>
+
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+  <script type="text/javascript" src="../administratorController.js"></script>
+
+</head>
+<body>
+  <header>
+    <h1>Secure Auction Administrator</h1>
+  </header>
+
+  <div class="row" id="auctionCreation">
+    <h2>Create a new auction</h2>
+    <form action="/create-auction" method="POST">
+      <label for="auctionTitle">Auction title:</label><br>
+      <input type="text" id="auctionTitle" name="auctionTitle">
+      <br><br>
+      <label for="auctionDescription">Auction description:</label><br>
+      <input type="text" id="auctionDescription" name="auctionDescription">
+      <br><br>
+      <label for="auctionRegistrationDeadline">Auction registration deadline (EST):</label><br>
+      <input type="datetime-local" id="auctionRegistrationDeadline" name="auctionRegistrationDeadline">
+      <br><br>
+      <input type="submit" id="createAuction" name="createAuction" value="Create auction"/>
+    </form>
+  </div>
+</body>
+</html>
