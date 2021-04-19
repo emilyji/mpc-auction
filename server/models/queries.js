@@ -54,6 +54,19 @@ module.exports.updatePartyID = function(party_id, email) {
   });
 }
 
+// add auction ID to a specific user
+module.exports.updateAuctionID = function(auction_id, email) {
+  return new Promise(function (resolve, reject) {
+    User.updateOne({ username: email }, { $set: {auction_id: auction_id} }, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 // find user by party ID
 module.exports.getUserByPartyID = function(party_id) {
   return new Promise(function (resolve, reject) {
@@ -84,13 +97,15 @@ module.exports.getUserEmailsPartyIDNE = function(party_id) {
   });
 }
 
-module.exports.insertAuctionInfo = function (auction_id, title, description, registration_deadline, submission_deadline) {
+module.exports.insertAuctionInfo = function (auction_id, title, description, 
+                                            registration_deadline, auction_start, auction_end) {
   var auctionInfo = new Auction({
     _id: auction_id,
     title: title,
     description: description,
     registration_deadline: registration_deadline,
-    submission_deadline: submission_deadline,
+    auction_start: auction_start,
+    auction_end: auction_end,
     status: 'REGISTRATION_START',
   });
 

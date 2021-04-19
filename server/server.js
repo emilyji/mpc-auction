@@ -133,7 +133,7 @@ app.post('/create-auction', function (req, res) {
   const auctionID = uuidv4();
   console.log(req.body);
   var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
-                                          req.body.auctionRegistrationDeadline, null);
+                                          req.body.auctionRegistrationDeadline, req.body.auctionStart, req.body.auctionEnd);
   promise.then(function () {
     console.log('successfully added auction info to database', req.body);
     res.redirect('/manage');
@@ -156,7 +156,8 @@ app.get('/', function (req,res) {
       promise.then(function (data) {
         console.log(data);
         res.render(path.join(__dirname, '../client/views/register'), 
-                  {title: data.title, description: data.description, deadline: data.registration_deadline});
+                  {title: data.title, description: data.description, deadline: data.registration_deadline,
+                   auction_id: data._id});
       })
     }
   });
@@ -171,10 +172,13 @@ app.post('/', function (req, res) {
       console.log(err);
       return res.sendFile(path.join(__dirname, '../client/views/register.html'));
     }
-  
     passport.authenticate("local")(
       req, res, function () {
-      res.sendFile(path.join(__dirname, '../client/views/signup_success.html'));
+      var promise = queries.updateAuctionID(req.body.auctionID, email);
+      promise.then(function () {
+        console.log('successfully updated auction ID of user', email);
+        res.sendFile(path.join(__dirname, '../client/views/signup_success.html'));
+      });
     });
   });
 });
