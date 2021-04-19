@@ -6,7 +6,7 @@
 /* global config */
 
 // eslint-disable-next-line no-unused-vars
-function connect() {
+function submit() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
@@ -38,31 +38,28 @@ function connect() {
     $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
     var email = $('#email').html();
     updateInputPartyID(jiff['id'], email);
+
+    var input = parseInt($('#number').val());
+
+    if (isNaN(input)) {
+      $('#output').append("<p class='error'>Input a valid number!</p>");
+    } else if (100 < input || input < 0 || input !== Math.floor(input)) {
+      $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
+    } else {
+      $('#button').attr('disabled', true);
+      $('#output').append('<p>Starting...</p>');
+      // eslint-disable-next-line no-undef
+      var promise = mpc.compute(input);
+      promise.then(function (opened_array) {
+        var results = {
+          'second_highest_bid': opened_array[0],
+          'winner_ID': opened_array[1]
+        };
+        handleResult(results);
+        sendAuctionWinner(results);
+      });
+    }
   });
-}
-
-// eslint-disable-next-line no-unused-vars
-function submit() {
-  var input = parseInt($('#number').val());
-
-  if (isNaN(input)) {
-    $('#output').append("<p class='error'>Input a valid number!</p>");
-  } else if (100 < input || input < 0 || input !== Math.floor(input)) {
-    $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-  } else {
-    $('#button').attr('disabled', true);
-    $('#output').append('<p>Starting...</p>');
-    // eslint-disable-next-line no-undef
-    var promise = mpc.compute(input);
-    promise.then(function (opened_array) {
-      var results = {
-        'second_highest_bid': opened_array[0],
-        'winner_ID': opened_array[1]
-      };
-      handleResult(results);
-      sendAuctionWinner(results);
-    });
-  }
 }
 
 function handleResult(results) {
