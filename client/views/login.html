@@ -1,17 +1,28 @@
 <html>
 <head>
-	<title>Login Page</title>
+<title>Login Page</title>
+<link rel='stylesheet' type='text/css' href='../style.css'>
 </head>
-<body>
 
-<h1>Login</h1>
-  
-<form action="/login" method="POST">
-    <input type="text" name="email"
-        placeholder="email">
-    <input type="password" name="password" 
-        placeholder="password">
-    <button>Login</button>
-</form>
+<body>
+	<br>
+    <br>
+    <br>
+	<form action="/login" method="POST">
+		<h1>Log In to Example Auction</h1>
+	    <p>Please confirm your identity by using the email and password you chose during the registration process. After you log in, you will be redirected to the bidding page.</p>
+
+	    <label for="email"><b>Email</b></label>         
+	    <input type="text" name="email"
+	        placeholder="email">
+
+	    <label for="password"><b>Password</b></label>
+	    <input type="password" name="password" 
+	        placeholder="password">
+
+	    <br>
+        <input type="submit" id="submitDetails"  
+            name="submitDetails" value="Log In"/><br>
+	</form>
 </body>
 </html>
