@@ -12,7 +12,7 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-function sendEmails() {
+module.exports.sendNotificationEmails = function (title, description, auction_id, auction_end) {
   var promise = queries.registeredUserEmails();
   promise.then(function (emails) {
     async.each(emails, function (email, callback) { 
@@ -20,10 +20,11 @@ function sendEmails() {
         from: process.env.ADMINISTRATOR_EMAIL_USER,
         to: email,
         subject: 'Auction',
-        html: `<h1>Example Auction</h1>
-              <h2>Example Description</h2>
-              <p>Thank you for registering. The auction is now live! Please click the following link to submit your bid.</p>
-              <a href=http://localhost:8080/login> Click here</a>`,
+        html: `<h1>`+title+`</h1>
+              <h2>`+description+`</h2>
+              <p>Thank you for registering. The auction is now live! Your bid must be submitted by `+auction_end+`.</p>
+              <p>Please click the following link to submit your bid.</p>
+              <a href=http://localhost:8080/login>Click here</a>`,
       };
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
@@ -35,7 +36,6 @@ function sendEmails() {
         callback();
       });
     });
-    // process.exit();
   });
 }
 

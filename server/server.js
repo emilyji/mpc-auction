@@ -10,6 +10,8 @@ console.log('Command line arguments: [/path/to/configuration/file.json]');
 var fs = require('fs');
 var path = require('path');
 const {v4 : uuidv4} = require('uuid');
+const updateConfig = require('./scripts/updateConfig');
+const emailHelper = require('./scripts/emailHelper');
 
 // Server setup
 var express = require('express');
@@ -32,8 +34,6 @@ var LocalStrategy = require('passport-local');
 var passportLocalMongoose = require('passport-local-mongoose');
 var User = require('./models/user');
 var queries = require('./models/queries');
-
-var emailHelper = require('./scripts/emailHelper');
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -125,11 +125,11 @@ app.get('/config.js', function (req, res) {
   res.send(str);
 });
 
-app.get('/create-auction', function (req, res) {
+app.get('/create_auction', function (req, res) {
   res.render(path.join(__dirname, '../client/views/create'));
 }); 
 
-app.post('/create-auction', function (req, res) {
+app.post('/create_auction', function (req, res) {
   const auctionID = uuidv4();
   console.log(req.body);
   var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
@@ -141,7 +141,26 @@ app.post('/create-auction', function (req, res) {
 });
 
 app.get('/manage', function (req, res) {
-  res.render(path.join(__dirname, '../client/views/manage'));
+  var promise = queries.getCurrentAuctionInfo();
+  promise.then(function (data) {
+    console.log(data);
+    res.render(path.join(__dirname, '../client/views/manage'), 
+              {title: data.title, description: data.description, deadline: data.registration_deadline_string,
+              auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
+  });
+});
+
+app.post('/update_config', function (req, res) {
+  updateConfig.editInputParties();
+  res.send('Successfully updated config');
+});
+
+app.post('/notify_registered_users', function (req, res) {
+  var promise = queries.getCurrentAuctionInfo();
+  promise.then(function (data) {
+    emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
+    res.send('Successfully sent notification emails');
+  });
 });
 
 // Registration form
@@ -158,7 +177,7 @@ app.get('/', function (req,res) {
         res.render(path.join(__dirname, '../client/views/register'), 
                   {title: data.title, description: data.description, deadline: data.registration_deadline_string,
                    auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
-      })
+      });
     }
   });
 });

@@ -5,7 +5,7 @@ const config = require(configFile);
 
 const queries = require('../models/queries.js');
 
-function editInputParties() {
+module.exports.editInputParties = function() {
   var promise = queries.totalRegisteredUsers();
   promise.then(function (count) {
     var inputParties = [];
@@ -18,12 +18,13 @@ function editInputParties() {
     config.party_count = config.compute_parties.length + count;
     var newConfig = JSON.stringify(config, null, 2);
     fs.writeFile(path.join(__dirname, configFile), newConfig, function(err) {
-      if (err) console.log(err);
-      console.log('config.json file was successfully updated');
-      console.log(JSON.stringify(config, null, 2));
-      process.exit();
+      if (err) {
+        console.log(err);
+      }
+      else {
+        console.log('config.json file was successfully updated');
+        console.log(JSON.stringify(config, null, 2));
+      }
     });
   });
 }
-
-editInputParties();
