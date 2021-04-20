@@ -149,7 +149,7 @@ app.get('/', function (req,res) {
   var promise = queries.totalAuctions();
   promise.then(function (count) {
     if (count === 0) {
-      res.render(path.join(__dirname, '../client/views/register'));
+      res.render(path.join(__dirname, '../client/views/registration_closed.html'));
     }
     else {
       var promise = queries.getCurrentAuctionInfo();
@@ -231,13 +231,12 @@ app.use('/dist', express.static(path.join(__dirname, '..', 'jiff', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', 'jiff', 'lib', 'ext')));
 
 http.listen(8080, function () {
-  console.log('listening on *:8080');
+  console.log('listening on *:8080 for http');
 });
 https.listen(8443, function () {
-  console.log('listening on *:8443');
+  console.log('listening on *:8443 for https');
 });
 
 console.log('** To run a compute party, use the command line and run node compute-party.js [configuration-file] [computation-id]');
 console.log('All compute parties must be running before input parties can connect, an input party can leave');
 console.log('any time after it submits its input.');
-console.log('');
