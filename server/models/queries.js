@@ -138,6 +138,17 @@ module.exports.getCurrentAuctionInfo = function () {
       if (err) {
         reject(err);
       } else {
+        var dateString = new Date(data.registration_deadline).toUTCString();
+        dateString = dateString.split(' ').slice(0, 5).join(' ');
+        data.registration_deadline_string = dateString;
+
+        dateString = new Date(data.auction_start).toUTCString();
+        dateString = dateString.split(' ').slice(0, 5).join(' ');
+        data.auction_start_string = dateString;
+
+        dateString = new Date(data.auction_end).toUTCString();
+        dateString = dateString.split(' ').slice(0, 5).join(' ');
+        data.auction_end_string = dateString;
         resolve(data);
       }
     });

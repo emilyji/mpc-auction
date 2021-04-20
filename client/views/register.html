@@ -8,8 +8,10 @@
     <form action="/" method="POST">
         <h1>Sign Up for {{ title }}</h1>
         <h3>Auction description: {{ description }}</h3>
-        <p>Please register for this auction by entering an email and password, which you will use to log in to the bidding page once the auction is live. If you successfully register, you will be redirected to a success confirmation page.</p>
-        <p>The registration deadline is {{ deadline }}. After this date, you will no longer be able to register for the auction.</p>
+        <p><b>The registration deadline is {{ deadline }}. After this date, you will no longer be able to register for this auction.</b></p>
+        <hr>
+        <p>Please register for this auction by entering an email and a password, which you will use to log in to the bidding page once the auction is live. If you successfully register, you will be redirected to a success confirmation page.</p>
+        <p>The auction will begin at {{ start }}. At that time, you will receive an email with a link to the auction. You must submit your bid by {{ end }}.</p>
         <label for="email"><b>Email</b></label>                      
         <input class="box" type="text" name="email" id="email" 
             placeholder="Enter Email" required/><br>

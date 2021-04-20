@@ -156,8 +156,8 @@ app.get('/', function (req,res) {
       promise.then(function (data) {
         console.log(data);
         res.render(path.join(__dirname, '../client/views/register'), 
-                  {title: data.title, description: data.description, deadline: data.registration_deadline,
-                   auction_id: data._id});
+                  {title: data.title, description: data.description, deadline: data.registration_deadline_string,
+                   auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
       })
     }
   });
@@ -189,7 +189,7 @@ app.get('/auction', isLoggedIn, function (req, res) {
   promise.then(function (data) {
     res.render(path.join(__dirname, '../client/views/auction'), 
               {email: req.user.username, title: data.title, description: data.description,
-               auction_id: data._id, end: data.auction_end});
+               auction_id: data._id, end: data.auction_end_string});
   });
 });
 
