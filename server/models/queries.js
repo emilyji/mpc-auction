@@ -106,7 +106,7 @@ module.exports.insertAuctionInfo = function (auction_id, title, description,
     registration_deadline: registration_deadline,
     auction_start: auction_start,
     auction_end: auction_end,
-    status: 'REGISTRATION_START',
+    status: 'REGISTRATION',
   });
 
   return new Promise(function (resolve, reject) {
@@ -134,22 +134,40 @@ module.exports.totalAuctions = function () {
  
 module.exports.getCurrentAuctionInfo = function () {
   return new Promise(function (resolve, reject) {
-    Auction.findOne({ status: 'REGISTRATION_START' }, function (err, data) {
+    Auction.findOne({ status: { $in: [ 'REGISTRATION', 'LIVE' ] }}, function (err, data) {
       if (err) {
         reject(err);
       } else {
-        var dateString = new Date(data.registration_deadline).toUTCString();
-        dateString = dateString.split(' ').slice(0, 5).join(' ');
-        data.registration_deadline_string = dateString;
+        if (data == null) {
+          var message = 'no auctions are open for registration or live';
+          resolve(message);
+        }
+        else {
+          var dateString = new Date(data.registration_deadline).toUTCString();
+          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          data.registration_deadline_string = dateString;
 
-        dateString = new Date(data.auction_start).toUTCString();
-        dateString = dateString.split(' ').slice(0, 5).join(' ');
-        data.auction_start_string = dateString;
+          dateString = new Date(data.auction_start).toUTCString();
+          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          data.auction_start_string = dateString;
 
-        dateString = new Date(data.auction_end).toUTCString();
-        dateString = dateString.split(' ').slice(0, 5).join(' ');
-        data.auction_end_string = dateString;
-        resolve(data);
+          dateString = new Date(data.auction_end).toUTCString();
+          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          data.auction_end_string = dateString;
+          resolve(data);
+        }
+      }
+    });
+  });
+}
+
+module.exports.updateAuctionStatus = function(auction_id, status) {
+  return new Promise(function (resolve, reject) {
+    Auction.updateOne({ _id: auction_id }, { $set: { status: status }}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
       }
     });
   });

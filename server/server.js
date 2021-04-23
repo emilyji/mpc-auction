@@ -125,11 +125,11 @@ app.get('/config.js', function (req, res) {
   res.send(str);
 });
 
-app.get('/create_auction', function (req, res) {
+app.get('/create-auction', function (req, res) {
   res.render(path.join(__dirname, '../client/views/create'));
 }); 
 
-app.post('/create_auction', function (req, res) {
+app.post('/create-auction', function (req, res) {
   const auctionID = uuidv4();
   console.log(req.body);
   var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
@@ -141,8 +141,7 @@ app.post('/create_auction', function (req, res) {
 });
 
 app.get('/manage', function (req, res) {
-  var promise = queries.getCurrentAuctionInfo();
-  promise.then(function (data) {
+  queries.getCurrentAuctionInfo().then(function (data) {
     console.log(data);
     res.render(path.join(__dirname, '../client/views/manage'), 
               {title: data.title, description: data.description, deadline: data.registration_deadline_string,
@@ -151,14 +150,12 @@ app.get('/manage', function (req, res) {
 });
 
 app.post('/update_config', function (req, res) {
-  console.log(req.body.auctionID);
   updateConfig.editInputParties(req.body.auctionID);
   res.send('Successfully updated config');
 });
 
 app.post('/notify_registered_users', function (req, res) {
-  var promise = queries.getCurrentAuctionInfo();
-  promise.then(function (data) {
+  queries.getCurrentAuctionInfo().then(function (data) {
     emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
     res.send('Successfully sent notification emails');
   });
@@ -166,18 +163,21 @@ app.post('/notify_registered_users', function (req, res) {
 
 // Registration form
 app.get('/', function (req,res) {
-  var promise = queries.totalAuctions();
-  promise.then(function (count) {
+  queries.totalAuctions().then(function (count) {
     if (count === 0) {
       res.render(path.join(__dirname, '../client/views/registration_closed.html'));
     }
     else {
-      var promise = queries.getCurrentAuctionInfo();
-      promise.then(function (data) {
-        console.log(data);
-        res.render(path.join(__dirname, '../client/views/register'), 
-                  {title: data.title, description: data.description, deadline: data.registration_deadline_string,
-                   auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
+      queries.getCurrentAuctionInfo().then(function (data) {
+        if (data == 'no auctions are open for registration or live') {
+          res.render(path.join(__dirname, '../client/views/registration_closed.html'));
+        }
+        else {
+          console.log(data);
+          res.render(path.join(__dirname, '../client/views/register'), 
+                    {title: data.title, description: data.description, deadline: data.registration_deadline_string,
+                    auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
+        }
       });
     }
   });
@@ -205,8 +205,7 @@ app.post('/', function (req, res) {
 
 // Auction bidding page
 app.get('/auction', isLoggedIn, function (req, res) {
-  var promise = queries.getCurrentAuctionInfo();
-  promise.then(function (data) {
+  queries.getCurrentAuctionInfo().then(function (data) {
     res.render(path.join(__dirname, '../client/views/auction'), 
               {email: req.user.username, title: data.title, description: data.description,
                auction_id: data._id, end: data.auction_end_string});

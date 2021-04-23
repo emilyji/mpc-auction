@@ -6,8 +6,7 @@ const config = require(configFile);
 const queries = require('../models/queries.js');
 
 module.exports.editInputParties = function(auction_id) {
-  var promise = queries.totalRegisteredUsers(auction_id);
-  promise.then(function (count) {
+  queries.totalRegisteredUsers(auction_id).then(function (count) {
     var inputParties = [];
     var ID = 4;
     for(var i = 0; i < count; i++) {
@@ -24,6 +23,9 @@ module.exports.editInputParties = function(auction_id) {
       else {
         console.log('config.json file was successfully updated');
         console.log(JSON.stringify(config, null, 2));
+        queries.updateAuctionStatus(auction_id, 'LIVE').then(function () {
+          console.log('set auction status to LIVE');
+        });
       }
     });
   });
