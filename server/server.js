@@ -151,7 +151,8 @@ app.get('/manage', function (req, res) {
 });
 
 app.post('/update_config', function (req, res) {
-  updateConfig.editInputParties();
+  console.log(req.body.auctionID);
+  updateConfig.editInputParties(req.body.auctionID);
   res.send('Successfully updated config');
 });
 

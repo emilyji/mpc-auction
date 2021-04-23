@@ -1,5 +1,6 @@
 function updateConfigurationFile() {
-  var auctionID = document.getElementById('auction-id').value;
+  var auctionID = document.getElementById('auction-id').innerHTML;
+  auctionID = auctionID.split(' ')[1];
   $.ajax('https://localhost:8443/update_config', {
     type: 'POST',
     contentType: 'application/json',
@@ -11,7 +12,8 @@ function updateConfigurationFile() {
 }
 
 function notifyRegisteredUsers() {
-  var auctionID = document.getElementById('auction-id').value;
+  var auctionID = document.getElementById('auction-id').innerHTML;
+  auctionID = auctionID.split(' ')[1];
   $.ajax('https://localhost:8443/notify_registered_users', {
     type: 'POST',
     contentType: 'application/json',

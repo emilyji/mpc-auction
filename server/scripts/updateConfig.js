@@ -5,8 +5,8 @@ const config = require(configFile);
 
 const queries = require('../models/queries.js');
 
-module.exports.editInputParties = function() {
-  var promise = queries.totalRegisteredUsers();
+module.exports.editInputParties = function(auction_id) {
+  var promise = queries.totalRegisteredUsers(auction_id);
   promise.then(function (count) {
     var inputParties = [];
     var ID = 4;

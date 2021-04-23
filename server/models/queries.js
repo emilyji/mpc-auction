@@ -11,10 +11,10 @@ const Auction = require('./auction.js');
 
 module.exports = {};
 
-// get total number of users that registered for the auction
-module.exports.totalRegisteredUsers = function () {
+// get total number of users that registered for a specific auction
+module.exports.totalRegisteredUsers = function(auction_id) {
   return new Promise(function (resolve, reject) {
-    User.find().countDocuments(function (err, data) {
+    User.countDocuments({ auction_id: auction_id }, function (err, data) {
       if (err) {
         reject(err);
       } else {
