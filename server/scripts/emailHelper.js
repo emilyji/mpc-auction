@@ -13,8 +13,7 @@ var transporter = nodemailer.createTransport({
 });
 
 module.exports.sendNotificationEmails = function (title, description, auction_id, auction_end) {
-  var promise = queries.registeredUserEmails();
-  promise.then(function (emails) {
+  queries.registeredUserEmails(auction_id).then(function (emails) {
     async.each(emails, function (email, callback) { 
       var mailOptions = {
         from: process.env.ADMINISTRATOR_EMAIL_USER,
@@ -32,54 +31,64 @@ module.exports.sendNotificationEmails = function (title, description, auction_id
         } else {
           console.log('Email sent: ' + info.response);
           console.log('Recipient: ' + email);
+          callback();
         }
-        callback();
       });
     });
   });
 }
 
 module.exports.emailAuctionWinner = function (party_id, second_highest_bid) {
-  var promise = queries.getUserByPartyID(party_id);
-  promise.then(function (winner) {
-    var winnerEmail = winner.username;
-    var mailOptions = {
-      from: process.env.ADMINISTRATOR_EMAIL_USER,
-      to: winnerEmail,
-      subject: 'Auction Result',
-      html: `<h1>Congratulations! You are the winner of Example Auction!</h1>
-            <h2>The value of the second highest bid, which is the price that you must pay, is ${second_highest_bid}.</h2>`,
-    };
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-        console.log('Recipient: ' + winnerEmail);
-      }
-    });
-  });
-}
-
-module.exports.emailAuctionLosers = function (winner_party_id) {
-  var promise = queries.getUserEmailsPartyIDNE(winner_party_id);
-  promise.then(function (emails) {
-    async.each(emails, function (email, callback) { 
+  queries.getUserByPartyID(party_id).then(function (winner) {
+    if (winner.notified_auction_outcome != true) {
+      var winnerEmail = winner.username;
       var mailOptions = {
         from: process.env.ADMINISTRATOR_EMAIL_USER,
-        to: email,
+        to: winnerEmail,
         subject: 'Auction Result',
-        html: `<h1>Thank you for participating in Example Auction. I am sorry to inform you that you did not win.</h1>`,
+        html: `<h1>Congratulations! You are the winner of Example Auction!</h1>
+              <h2>The value of the second highest bid, which is the price that you must pay, is ${second_highest_bid}.</h2>`,
       };
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log(error);
         } else {
           console.log('Email sent: ' + info.response);
-          console.log('Recipient: ' + email);
+          console.log('Recipient: ' + winnerEmail);
+          queries.setNotifiedTrue(winnerEmail).then(function () {
+            console.log('Set notified_auction_outcome status to true');
+          });
         }
-        callback();
       });
+    }
+  });
+}
+
+module.exports.emailAuctionLosers = function (winner_party_id) {
+  queries.getUsersPartyIDNE(winner_party_id).then(function (losers) {
+    async.each(losers, function (user, callback) { 
+      console.log(user.notified_auction_outcome);
+      if (user.notified_auction_outcome != true) {
+        var email = user.username;
+        var mailOptions = {
+          from: process.env.ADMINISTRATOR_EMAIL_USER,
+          to: email,
+          subject: 'Auction Result',
+          html: `<h1>Thank you for participating in Example Auction. I am sorry to inform you that you did not win.</h1>`,
+        };
+        transporter.sendMail(mailOptions, function(error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+            console.log('Recipient: ' + email);
+            queries.setNotifiedTrue(email).then(function () {
+              console.log('Set notified_auction_outcome status to true');
+              callback();
+            });
+          }
+        });
+      }
     });
   });
 }

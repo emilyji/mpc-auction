@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     party_id: Number,
     auction_id: String,
-    notified: Boolean
+    notified_auction_outcome: Boolean
 });
 UserSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('User', UserSchema);
