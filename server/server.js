@@ -145,10 +145,11 @@ app.get('/manage', function (req, res) {
     console.log(data);
     res.render(path.join(__dirname, '../client/views/manage'), 
               {title: data.title, description: data.description, deadline: data.registration_deadline_string,
-              auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
+              auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string, end_time: data.auction_end});
   });
 });
 
+// The following do not serve files / are not URLs
 app.post('/update_config', function (req, res) {
   updateConfig.editInputParties(req.body.auctionID);
   res.send('Successfully updated config');
@@ -159,6 +160,11 @@ app.post('/notify_registered_users', function (req, res) {
     emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
     res.send('Successfully sent notification emails');
   });
+});
+
+app.post('/get_connected_input_parties', function (req, res) {
+  console.log('assignedInput', assignedInput);
+  res.send(assignedInput);
 });
 
 // Registration form
