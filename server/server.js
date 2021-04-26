@@ -145,20 +145,21 @@ app.get('/manage', function (req, res) {
     console.log(data);
     res.render(path.join(__dirname, '../client/views/manage'), 
               {title: data.title, description: data.description, deadline: data.registration_deadline_string,
-              auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string, end_time: data.auction_end});
+              auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string, 
+              deadline_time: data.registration_deadline, start_time: data.auction_start, end_time: data.auction_end});
   });
 });
 
 // The following do not serve files / are not URLs
 app.post('/update_config', function (req, res) {
   updateConfig.editInputParties(req.body.auctionID);
-  res.send('Successfully updated config');
+  res.send('Successfully updated config!');
 });
 
 app.post('/notify_registered_users', function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
-    res.send('Successfully sent notification emails');
+    res.send('Successfully sent notification emails to registered bidders!');
   });
 });
 
@@ -167,18 +168,24 @@ app.post('/get_connected_input_parties', function (req, res) {
   res.send(assignedInput);
 });
 
+app.post('/get_connected_compute_parties', function (req, res) {
+  console.log('assignedCompute', assignedCompute);
+  res.send(assignedCompute);
+});
+
 // Registration form
 app.get('/', function (req,res) {
+  var currentDateTime = new Date();
   queries.totalAuctions().then(function (count) {
     if (count === 0) {
       res.render(path.join(__dirname, '../client/views/registration_closed.html'));
-    }
-    else {
+    } else {
       queries.getCurrentAuctionInfo().then(function (data) {
         if (data == 'no auctions are open for registration or live') {
           res.render(path.join(__dirname, '../client/views/registration_closed.html'));
-        }
-        else {
+        } else if (currentDateTime > data.registration_deadline) {
+          res.render(path.join(__dirname, '../client/views/registration_closed.html'));
+        } else {
           console.log(data);
           res.render(path.join(__dirname, '../client/views/register'), 
                     {title: data.title, description: data.description, deadline: data.registration_deadline_string,
@@ -229,6 +236,8 @@ app.post('/auction', function (req, res) {
     console.log('successfully emailed the auction winner');
     emailHelper.emailAuctionLosers(req.body.winner_ID);
     console.log('successfully emailed the auction losers');
+    assignedInput = {};
+    assignedCompute = {};
   } else {
     console.log('something is wrong');
   }

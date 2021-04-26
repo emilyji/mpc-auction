@@ -40,8 +40,6 @@ function checkBidSubmission() {
         data: JSON.stringify({auctionID: auctionID}),
         success: function (resp) {
           var connectedIPcount = Object.keys(resp).length;
-          console.log(connectedIPcount);
-          console.log(config.input_parties.length);
           if (connectedIPcount < config.input_parties.length) {
             var jiff = mpc.connect('https://localhost:8443', 'test', {party_count: config.party_count}, config);
             console.log('administratorController created a JIFF client for the input party that failed to participate');
@@ -58,5 +56,35 @@ function checkBidSubmission() {
       });
     } 
   }
+}
 
+function checkAuctionReadiness() {
+  var id = setInterval(checkConnectedComputeParties, 3000);
+
+  function checkConnectedComputeParties() {
+    console.log('called checkConnectedComputeParties');
+    var auctionID = document.getElementById('auction-id').innerHTML;
+    var registrationDeadline = document.getElementById('registration-deadline').innerHTML;
+    registrationDeadline = Date.parse(registrationDeadline);
+    var currentDateTime = new Date();
+    if (currentDateTime > registrationDeadline) {
+      $.ajax('https://localhost:8443/get_connected_compute_parties', {
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({auctionID: auctionID}),
+        success: function (resp) {
+          var connectedCPcount = Object.keys(resp).length;
+          if (connectedCPcount == config.compute_parties.length) {
+            document.getElementById('compute-party-connection-status').innerHTML = 
+            'Status: All computation parties have successfully connected to the server! ';
+            console.log('ready to stop calling checkAuctionReadiness');
+            clearInterval(id);
+          } else if (connectedCPcount > 0) {
+            document.getElementById('compute-party-connection-status').innerHTML = 
+            'Status: The computation parties are trying to connect to the server';
+          }
+        }  
+      });
+    }
+  }
 }

@@ -31,7 +31,6 @@ function submit() {
   }
 
   hostname = hostname + ':' + port;
-  console.log(hostname);
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
@@ -43,8 +42,6 @@ function submit() {
 
     if (isNaN(input)) {
       $('#output').append("<p class='error'>Input a valid number!</p>");
-    } else if (100 < input || input < 0 || input !== Math.floor(input)) {
-      $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
     } else {
       $('#button').attr('disabled', true);
       $('#output').append('<p>Starting...</p>');
@@ -78,7 +75,6 @@ function updateInputPartyID(ID, email) {
   xhr.open('POST', 'https://localhost:8443/auction', true);
   xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   xhr.send(JSON.stringify(params));
-  console.log("got here 1");
 }
 
 function sendAuctionWinner(results) {
