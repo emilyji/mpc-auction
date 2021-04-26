@@ -42,9 +42,9 @@ module.exports.registeredUserEmails = function (auction_id) {
 };
 
 // add party ID to a specific user
-module.exports.updatePartyID = function (party_id, email) {
+module.exports.updatePartyID = function (auction_id, party_id, email) {
   return new Promise(function (resolve, reject) {
-    User.updateOne({ username: email }, { $set: {party_id: party_id} }, function (err) {
+    User.updateOne({ $and: [{username: email}, {auction_id: auction_id}] }, { $set: {party_id: party_id} }, function (err) {
       if (err) {
         reject(err);
       } else {
@@ -172,6 +172,18 @@ module.exports.getCurrentAuctionInfo = function () {
 module.exports.updateAuctionStatus = function (auction_id, status) {
   return new Promise(function (resolve, reject) {
     Auction.updateOne({ _id: auction_id }, { $set: { status: status }}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+module.exports.insertAuctionResults = function (auction_id, winner_id, second_highest_bid) {
+  return new Promise(function (resolve, reject) {
+    Auction.updateOne({ _id: auction_id }, { $set: {winner_id: winner_id, second_highest_bid: second_highest_bid} }, function (err) {
       if (err) {
         reject(err);
       } else {

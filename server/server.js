@@ -135,7 +135,7 @@ app.post('/create-auction', function (req, res) {
   var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
                                           req.body.auctionRegistrationDeadline, req.body.auctionStart, req.body.auctionEnd);
   promise.then(function () {
-    console.log('successfully added auction info to database', req.body);
+    console.log('Successfully added auction info to database', req.body);
     res.redirect('/manage');
   });
 });
@@ -171,6 +171,26 @@ app.post('/get_connected_input_parties', function (req, res) {
 app.post('/get_connected_compute_parties', function (req, res) {
   console.log('assignedCompute', assignedCompute);
   res.send(assignedCompute);
+});
+
+app.post('/get_computation_status', function (req, res) {
+  queries.getCurrentAuctionInfo().then(function (data) {
+    if (data.hasOwnProperty('winner_id') && data.hasOwnProperty('second_highest_bid')) {
+      res.send('MPC finished');
+    } else {
+      res.send('MPC has not finished');
+    }
+  });
+});
+
+app.post('/email_auction_results', function (req, res) {
+  queries.getCurrentAuctionInfo().then(function (data) {
+    emailHelper.emailAuctionWinner(data.winner_id, data.second_highest_bid);
+    console.log('Successfully emailed the auction winner');
+    emailHelper.emailAuctionLosers(data.winner_id);
+    console.log('successfully emailed the auction losers');
+    res.send('Successfully sent result emails to the bidders who participated in the auction!');
+  });
 });
 
 // Registration form
@@ -226,21 +246,19 @@ app.get('/auction', isLoggedIn, function (req, res) {
 });
 
 app.post('/auction', function (req, res) {
-  if (req.body.action === 'updateInputPartyID') {
-    var promise = queries.updatePartyID(req.body.party_id, req.body.user);
-    promise.then(function () {
-      console.log('successfully updated party ID of user', req.body.user);
-    });
-  } else if (req.body.action === 'sendAuctionWinner') {
-    emailHelper.emailAuctionWinner(req.body.winner_ID, req.body.second_highest_bid);
-    console.log('successfully emailed the auction winner');
-    emailHelper.emailAuctionLosers(req.body.winner_ID);
-    console.log('successfully emailed the auction losers');
-    assignedInput = {};
-    assignedCompute = {};
-  } else {
-    console.log('something is wrong');
-  }
+  queries.getCurrentAuctionInfo().then(function (data) {
+    if (req.body.action === 'updateInputPartyID') {
+      queries.updatePartyID(data._id, req.body.party_id, req.body.user).then(function () {
+        console.log('successfully updated party ID of user', req.body.user);
+      });
+    } else if (req.body.action === 'sendAuctionWinner') {
+      queries.insertAuctionResults(data._id, req.body.winner_ID, req.body.second_highest_bid).then(function () {
+        console.log('the server received the auction results');
+      });
+    } else {
+      console.log('something is wrong');
+    }
+  });
 });
 
 //Showing login page

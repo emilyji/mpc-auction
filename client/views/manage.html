@@ -11,8 +11,10 @@
 
   <script>
     window.onload = function () {
-      checkBidSubmission();
+      checkRegistrationEnd();
       checkAuctionReadiness();
+      checkBidSubmission();
+      checkAuctionEnd();
     }
   </script>
 
@@ -31,18 +33,19 @@
     <hr>
     <form id="auction-manage">
       <p>After the registration period ends, click the button below to update the configuration file with the maximum number of bidders that will participate in the auction. This step is necessary for securely computing the auction outcome.</p> 
-      <button type="button" id="update-config" onclick="updateConfigurationFile();">Update Configuration File</button>
+      <button type="button" id="update-config" onclick="updateConfigurationFile();" disabled>Update Configuration File</button>
       <p id="update-button-output"></p>
       <br>
 
       <p id="compute-party-connection-status">Status: No computation parties are connected to the server.</p>
       <p>After all computation parties have connected to the server, click the button below to notify the bidders that the auction is live. Every individual who registered will receive a link to the bid submission page.</p> 
-      <button type="button" id="notify-registered-users" onclick="notifyRegisteredUsers();">Notify Auction Participants</button>
+      <button type="button" id="notify-registered-users" onclick="notifyRegisteredUsers();" disabled>Notify Auction Participants</button>
       <p id="notify-button-output"></p>
       
       <hr>
       <p>After the secure computation finishes, click the button below to inform the bidders about the auction outcome. The winner will receive an email with the second highest bid value, which is the price to be paid. All other bidders will receive an email saying that they did not win the auction.</p> 
-      <button type="button" id="email-results">Email Auction Results</button>
+      <button type="button" id="email-results" onclick="emailAuctionResults();" disabled>Email Auction Results</button>
+      <p id="email-results-output"></p>
    </form>
 </body>
 </html>

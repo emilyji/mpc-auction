@@ -24,12 +24,26 @@ function notifyRegisteredUsers() {
   });
 }
 
+function emailAuctionResults() {
+  var auctionID = document.getElementById('auction-id').innerHTML;
+  auctionID = auctionID.split(' ')[1];
+  $.ajax('https://localhost:8443/email_auction_results', {
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({auctionID: auctionID}),
+    success: function (resp) {
+      document.getElementById('email-results-output').innerHTML = resp;
+    }  
+  });
+}
+
 function checkBidSubmission() {
   var id = setInterval(checkConnectedInputParties, 10000);
 
   function checkConnectedInputParties() {
     console.log('called checkConnectedInputParties');
     var auctionID = document.getElementById('auction-id').innerHTML;
+    auctionID = auctionID.split(' ')[1];
     var bidSubmissionDeadline = document.getElementById('bid-submission-deadline').innerHTML;
     bidSubmissionDeadline = Date.parse(bidSubmissionDeadline);
     var currentDateTime = new Date();
@@ -64,6 +78,7 @@ function checkAuctionReadiness() {
   function checkConnectedComputeParties() {
     console.log('called checkConnectedComputeParties');
     var auctionID = document.getElementById('auction-id').innerHTML;
+    auctionID = auctionID.split(' ')[1];
     var registrationDeadline = document.getElementById('registration-deadline').innerHTML;
     registrationDeadline = Date.parse(registrationDeadline);
     var currentDateTime = new Date();
@@ -76,12 +91,59 @@ function checkAuctionReadiness() {
           var connectedCPcount = Object.keys(resp).length;
           if (connectedCPcount == config.compute_parties.length) {
             document.getElementById('compute-party-connection-status').innerHTML = 
-            'Status: All computation parties have successfully connected to the server! ';
+            'Status: All computation parties have successfully connected to the server!';
+            document.getElementById('notify-registered-users').disabled = false;
             console.log('ready to stop calling checkAuctionReadiness');
             clearInterval(id);
           } else if (connectedCPcount > 0) {
             document.getElementById('compute-party-connection-status').innerHTML = 
             'Status: The computation parties are trying to connect to the server';
+          }
+        }  
+      });
+    }
+  }
+}
+
+function checkRegistrationEnd() {
+  var id = setInterval(enableUpdateConfig, 3000);
+
+  function enableUpdateConfig() {
+    console.log('called enableUpdateConfig');
+    var registrationDeadline = document.getElementById('registration-deadline').innerHTML;
+    registrationDeadline = Date.parse(registrationDeadline);
+    var currentDateTime = new Date();
+    if (currentDateTime > registrationDeadline) {
+      document.getElementById('update-config').disabled = false;
+      console.log('ready to stop calling enableUpdateConfig');
+      clearInterval(id);
+    }
+  }
+}
+
+function checkAuctionEnd() {
+  var id = setInterval(checkComputationStatus, 3000);
+
+  function checkComputationStatus() {
+    console.log('called checkComputationStatus');
+    var auctionID = document.getElementById('auction-id').innerHTML;
+    auctionID = auctionID.split(' ')[1];
+    var bidSubmissionDeadline = document.getElementById('bid-submission-deadline').innerHTML;
+    bidSubmissionDeadline = Date.parse(bidSubmissionDeadline);
+    var currentDateTime = new Date();
+    if (currentDateTime > bidSubmissionDeadline) {
+      $.ajax('https://localhost:8443/get_computation_status', {
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({auctionID: auctionID}),
+        success: function (resp) {
+          if (resp == 'MPC finished') {
+            console.log(resp);
+            document.getElementById('email-results').disabled = false;
+            console.log('ready to stop calling checkComputationStatus');
+            clearInterval(id);
+          } else {
+            console.log(resp);
           }
         }  
       });
