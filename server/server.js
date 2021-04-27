@@ -157,7 +157,7 @@ app.post('/update_config', function (req, res) {
 });
 
 app.post('/notify_registered_users', function (req, res) {
-  queries.getCurrentAuctionInfo().then(function (data) {
+  queries.getAuctionInfo(req.body.auctionID).then(function (data) {
     emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
     res.send('Successfully sent notification emails to registered bidders!');
   });
@@ -174,21 +174,21 @@ app.post('/get_connected_compute_parties', function (req, res) {
 });
 
 app.post('/get_computation_status', function (req, res) {
-  queries.getCurrentAuctionInfo().then(function (data) {
-    if (data.hasOwnProperty('winner_id') && data.hasOwnProperty('second_highest_bid')) {
-      res.send('MPC finished');
-    } else {
+  queries.getAuctionResults(req.body.auctionID).then(function (data) {
+    if (data == 'the auction results have not been computed yet') {
       res.send('MPC has not finished');
+    } else {
+      res.send('MPC finished');
     }
   });
 });
 
 app.post('/email_auction_results', function (req, res) {
-  queries.getCurrentAuctionInfo().then(function (data) {
-    emailHelper.emailAuctionWinner(data.winner_id, data.second_highest_bid);
+  queries.getAuctionInfo(req.body.auctionID).then(function (data) {
+    emailHelper.emailAuctionWinner(data._id, data.winner_id, data.second_highest_bid);
     console.log('Successfully emailed the auction winner');
-    emailHelper.emailAuctionLosers(data.winner_id);
-    console.log('successfully emailed the auction losers');
+    emailHelper.emailAuctionLosers(data._id, data.winner_id);
+    console.log('Successfully emailed the auction losers');
     res.send('Successfully sent result emails to the bidders who participated in the auction!');
   });
 });
@@ -248,9 +248,7 @@ app.get('/auction', isLoggedIn, function (req, res) {
 app.post('/auction', function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     if (req.body.action === 'updateInputPartyID') {
-      queries.updatePartyID(data._id, req.body.party_id, req.body.user).then(function () {
-        console.log('successfully updated party ID of user', req.body.user);
-      });
+      queries.updatePartyID(data._id, req.body.party_id, req.body.user);
     } else if (req.body.action === 'sendAuctionWinner') {
       queries.insertAuctionResults(data._id, req.body.winner_ID, req.body.second_highest_bid).then(function () {
         console.log('the server received the auction results');

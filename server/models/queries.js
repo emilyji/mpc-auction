@@ -68,9 +68,9 @@ module.exports.updateAuctionID = function (auction_id, email) {
 }
 
 // find user by party ID
-module.exports.getUserByPartyID = function (party_id) {
+module.exports.getUserByPartyID = function (auction_id, party_id) {
   return new Promise(function (resolve, reject) {
-    User.findOne({ party_id: party_id }, function (err, data) {
+    User.findOne({ $and: [{auction_id: auction_id}, {party_id: party_id}] }, function (err, data) {
       if (err) {
         reject(err);
       } else {
@@ -81,9 +81,9 @@ module.exports.getUserByPartyID = function (party_id) {
 }
 
 // get list of emails of users with a party_id that does not equal the function argument
-module.exports.getUsersPartyIDNE = function (party_id) {
+module.exports.getUsersPartyIDNE = function (auction_id, party_id) {
   return new Promise(function (resolve, reject) {
-    User.find({ party_id: { $ne: party_id } }, function (err, data) {
+    User.find({ $and: [{auction_id: auction_id}, { party_id: { $ne: party_id } }] }, function (err, data) {
       if (err) {
         reject(err);
       } else {
@@ -93,9 +93,9 @@ module.exports.getUsersPartyIDNE = function (party_id) {
   });
 }
 
-module.exports.setNotifiedTrue = function (email) {
+module.exports.setNotifiedTrue = function (auction_id, email) {
   return new Promise(function (resolve, reject) {
-    User.updateOne({ username: email }, { $set: {notified_auction_outcome: true} }, function (err) {
+    User.updateOne({ $and: [{username: email}, {auction_id: auction_id}] }, { $set: {notified_auction_outcome: true} }, function (err) {
       if (err) {
         reject(err);
       } else {
@@ -139,6 +139,19 @@ module.exports.totalAuctions = function () {
     });
   });
 };
+
+// find auction by auction ID
+module.exports.getAuctionInfo = function (auction_id) {
+  return new Promise(function (resolve, reject) {
+    Auction.findOne({ _id: auction_id }, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
  
 module.exports.getCurrentAuctionInfo = function () {
   return new Promise(function (resolve, reject) {
@@ -188,6 +201,24 @@ module.exports.insertAuctionResults = function (auction_id, winner_id, second_hi
         reject(err);
       } else {
         resolve();
+      }
+    });
+  });
+}
+
+module.exports.getAuctionResults = function (auction_id) {
+  return new Promise(function (resolve, reject) {
+    Auction.findOne({ $and: [{ _id: auction_id }, { winner_id: {$exists: true} }, { second_highest_bid: {$exists: true} }] }, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        if (data == null) {
+          var message = 'the auction results have not been computed yet';
+          resolve(message);
+        }
+        else {
+          resolve(data);
+        }
       }
     });
   });

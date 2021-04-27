@@ -34,7 +34,8 @@ function submit() {
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
-    $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
+    $('#button').attr('disabled', false); 
+    $('#output').append('<p>Connected to the compute parties!</p>');
     var email = $('#email').html();
     updateInputPartyID(jiff['id'], email);
 
@@ -52,17 +53,10 @@ function submit() {
           'second_highest_bid': opened_array[0],
           'winner_ID': opened_array[1]
         };
-        handleResult(results);
         sendAuctionWinner(results);
       });
     }
   });
-}
-
-function handleResult(results) {
-  $('#output').append('<p>The second highest bid is ' + results.second_highest_bid
-                       + ' and the winner is ' + results.winner_ID + '.</p>');
-  $('#button').attr('disabled', false);
 }
 
 function updateInputPartyID(ID, email) {
