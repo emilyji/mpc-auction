@@ -75,6 +75,18 @@ function checkBidSubmission() {
               console.log('administratorController JIFF client connected to the compute parties');
               var promise = mpc.compute(0);
               console.log('administratorController JIFF client submitted a dummy bid of 0');
+              promise.then(function (opened_array) {
+                var results = {
+                  'second_highest_bid': opened_array[0],
+                  'winner_ID': opened_array[1]
+                };
+                var params = results;
+                params.action = 'sendAuctionWinner'
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://localhost:8443/auction', true);
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                xhr.send(JSON.stringify(params));
+              });
             });
           } else {
             console.log('ready to stop calling checkBidSubmission');

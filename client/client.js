@@ -48,13 +48,6 @@ function submit() {
       $('#output').append('<p>Starting...</p>');
       // eslint-disable-next-line no-undef
       var promise = mpc.compute(input);
-      promise.then(function (opened_array) {
-        var results = {
-          'second_highest_bid': opened_array[0],
-          'winner_ID': opened_array[1]
-        };
-        sendAuctionWinner(results);
-      });
     }
   });
 }
@@ -65,15 +58,6 @@ function updateInputPartyID(ID, email) {
     'user': email,
     'action': 'updateInputPartyID'
   }
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://localhost:8443/auction', true);
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-  xhr.send(JSON.stringify(params));
-}
-
-function sendAuctionWinner(results) {
-  var params = results;
-  params.action = 'sendAuctionWinner'
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'https://localhost:8443/auction', true);
   xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
