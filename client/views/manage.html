@@ -32,20 +32,25 @@
     <p id="bid-submission-deadline" hidden>{{ end_time }}</p>
     <hr>
     <form id="auction-manage">
-      <p>After the registration period ends, click the button below to update the configuration file with the maximum number of bidders that will participate in the auction. This step is necessary for securely computing the auction outcome.</p> 
+      <p>After the registration period ends, click the button below to update the configuration file with the maximum number of bidders that will participate in the auction. This step is necessary for securely computing the auction results.</p> 
       <button type="button" id="update-config" onclick="updateConfigurationFile();" disabled>Update Configuration File</button>
       <p id="update-button-output"></p>
 
       <hr>
-      <p id="compute-party-connection-status">Status: No computation parties are connected to the server.</p>
       <p>After all computation parties have connected to the server, click the button below to notify the bidders that the auction is live. Every individual who registered will receive a link to the bid submission page.</p> 
+      <p id="compute-party-connection-status">Status: 0 computation parties are connected to the server</p>
       <button type="button" id="notify-registered-users" onclick="notifyRegisteredUsers();" disabled>Notify Auction Participants</button>
       <p id="notify-button-output"></p>
       
       <hr>
-      <p>After the secure computation finishes, click the button below to inform the bidders about the auction outcome. The winner will receive an email with the second highest bid value, which is the price to be paid. All other bidders will receive an email saying that they did not win the auction.</p> 
+      <p>After the secure computation finishes, click the button below to send the auction results to the bidders. The winner will receive an email with the second highest bid value, which is the price to be paid. All other participants will receive an email saying that they did not win the auction.</p> 
+      <p id="MPC-status">Status: The computation has not started yet</p>
       <button type="button" id="email-results" onclick="emailAuctionResults();" disabled>Email Auction Results</button>
       <p id="email-results-output"></p>
+
+      <hr>
+      <p>After emailing the results to the bidders, click the button below to officially end this auction. You will be directed back to the Create Auction web page.</p>
+      <button type="button" id="end-auction" onclick="closeAuction();" disabled>End This Auction</button>
    </form>
 </body>
 </html>

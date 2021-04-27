@@ -93,6 +93,18 @@ module.exports.getUsersPartyIDNE = function (auction_id, party_id) {
   });
 }
 
+module.exports.clearUsers = function () {
+  return new Promise(function (resolve, reject) {
+    User.deleteMany({}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 module.exports.setNotifiedTrue = function (auction_id, email) {
   return new Promise(function (resolve, reject) {
     User.updateOne({ $and: [{username: email}, {auction_id: auction_id}] }, { $set: {notified_auction_outcome: true} }, function (err) {

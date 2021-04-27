@@ -9,12 +9,12 @@ module.exports.editInputParties = function(auction_id) {
   queries.totalRegisteredUsers(auction_id).then(function (count) {
     var inputParties = [];
     var ID = 4;
-    for(var i = 0; i < count; i++) {
+    for(var i = 0; i < count + 1; i++) {
       inputParties[i]= ID;
       ID++;
     }
     config.input_parties = inputParties;
-    config.party_count = config.compute_parties.length + count;
+    config.party_count = config.compute_parties.length + count + 1;
     var newConfig = JSON.stringify(config, null, 2);
     fs.writeFile(path.join(__dirname, configFile), newConfig, function(err) {
       if (err) {

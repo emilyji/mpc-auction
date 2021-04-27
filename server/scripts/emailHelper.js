@@ -23,7 +23,7 @@ module.exports.sendNotificationEmails = function (title, description, auction_id
               <h2>`+description+`</h2>
               <p>Thank you for registering. The auction is now live! Your bid must be submitted by `+auction_end+`.</p>
               <p>Please click the following link to submit your bid.</p>
-              <a href=http://localhost:8080/login>Click here</a>`,
+              <a href=https://localhost:8443/login>Click here</a>`,
       };
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
@@ -38,16 +38,16 @@ module.exports.sendNotificationEmails = function (title, description, auction_id
   });
 }
 
-module.exports.emailAuctionWinner = function (auction_id, party_id, second_highest_bid) {
+module.exports.emailAuctionWinner = function (auction_id, title, party_id, second_highest_bid) {
   queries.getUserByPartyID(auction_id, party_id).then(function (winner) {
     if (winner.notified_auction_outcome != true) {
       var winnerEmail = winner.username;
       var mailOptions = {
         from: process.env.ADMINISTRATOR_EMAIL_USER,
         to: winnerEmail,
-        subject: 'Auction Result',
-        html: `<h1>Congratulations! You are the winner of Example Auction!</h1>
-              <h2>The value of the second highest bid, which is the price that you must pay, is `+second_highest_bid+`.</h2>`,
+        subject: title + ' Result',
+        html: `<h1>Congratulations! You are the winner of `+title+`.</h1>
+              <h2>The value of the second highest bid, which is the price that you must pay, is $`+second_highest_bid+`.</h2>`,
       };
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
@@ -66,7 +66,7 @@ module.exports.emailAuctionWinner = function (auction_id, party_id, second_highe
   });
 }
 
-module.exports.emailAuctionLosers = function (auction_id, winner_party_id) {
+module.exports.emailAuctionLosers = function (auction_id, title, winner_party_id) {
   queries.getUsersPartyIDNE(auction_id, winner_party_id).then(function (losers) {
     async.each(losers, function (user, callback) { 
       if (user.notified_auction_outcome != true) {
@@ -74,8 +74,8 @@ module.exports.emailAuctionLosers = function (auction_id, winner_party_id) {
         var mailOptions = {
           from: process.env.ADMINISTRATOR_EMAIL_USER,
           to: email,
-          subject: 'Auction Result',
-          html: `<h1>Thank you for participating in Example Auction. I am sorry to inform you that you did not win.</h1>`,
+          subject: title + ' Result',
+          html: `<h1>Thank you for participating in `+title+`. I am sorry to inform you that you did not win the auction.</h1>`,
         };
         transporter.sendMail(mailOptions, function(error, info) {
           if (error) {

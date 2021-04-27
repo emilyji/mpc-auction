@@ -126,7 +126,9 @@ app.get('/config.js', function (req, res) {
 });
 
 app.get('/create-auction', function (req, res) {
-  res.render(path.join(__dirname, '../client/views/create'));
+  queries.clearUsers().then(function () {
+    res.render(path.join(__dirname, '../client/views/create'));
+  });
 }); 
 
 app.post('/create-auction', function (req, res) {
@@ -157,7 +159,7 @@ app.post('/update_config', function (req, res) {
 });
 
 app.post('/notify_registered_users', function (req, res) {
-  queries.getAuctionInfo(req.body.auctionID).then(function (data) {
+  queries.getCurrentAuctionInfo().then(function (data) {
     emailHelper.sendNotificationEmails(data.title, data.description, data._id, data.auction_end_string);
     res.send('Successfully sent notification emails to registered bidders!');
   });
@@ -184,12 +186,21 @@ app.post('/get_computation_status', function (req, res) {
 });
 
 app.post('/email_auction_results', function (req, res) {
-  queries.getAuctionInfo(req.body.auctionID).then(function (data) {
-    emailHelper.emailAuctionWinner(data._id, data.winner_id, data.second_highest_bid);
+  queries.getCurrentAuctionInfo().then(function (data) {
+    emailHelper.emailAuctionWinner(data._id, data.title, data.winner_id, data.second_highest_bid);
     console.log('Successfully emailed the auction winner');
-    emailHelper.emailAuctionLosers(data._id, data.winner_id);
+    emailHelper.emailAuctionLosers(data._id, data.title, data.winner_id);
     console.log('Successfully emailed the auction losers');
     res.send('Successfully sent result emails to the bidders who participated in the auction!');
+  });
+});
+
+app.post('/close_auction', function (req, res) {
+  queries.updateAuctionStatus(req.body.auctionID, 'CLOSED').then(function () {
+    console.log('set auction status to CLOSED');
+    assignedCompute = {};
+    assignedInput = {};
+    res.redirect('/create-auction');
   });
 });
 

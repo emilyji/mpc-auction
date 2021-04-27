@@ -33,6 +33,20 @@ function emailAuctionResults() {
     data: JSON.stringify({auctionID: auctionID}),
     success: function (resp) {
       document.getElementById('email-results-output').innerHTML = resp;
+      document.getElementById('end-auction').disabled = false;
+    }  
+  });
+}
+
+function closeAuction() {
+  var auctionID = document.getElementById('auction-id').innerHTML;
+  auctionID = auctionID.split(' ')[1];
+  $.ajax('https://localhost:8443/close_auction', {
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({auctionID: auctionID}),
+    success: function (resp) {
+      window.location.assign('https://localhost:8443/create-auction');
     }  
   });
 }
@@ -91,13 +105,13 @@ function checkAuctionReadiness() {
           var connectedCPcount = Object.keys(resp).length;
           if (connectedCPcount == config.compute_parties.length) {
             document.getElementById('compute-party-connection-status').innerHTML = 
-            'Status: All computation parties have successfully connected to the server!';
+            'Status: All computation parties are successfully connected to the server!';
             document.getElementById('notify-registered-users').disabled = false;
             console.log('ready to stop calling checkAuctionReadiness');
             clearInterval(id);
           } else if (connectedCPcount > 0) {
             document.getElementById('compute-party-connection-status').innerHTML = 
-            'Status: The computation parties are trying to connect to the server';
+            'Status: '+connectedCPcount+' out of '+config.compute_parties.length+' computation parties are connected to the server';
           }
         }  
       });
@@ -138,12 +152,13 @@ function checkAuctionEnd() {
         data: JSON.stringify({auctionID: auctionID}),
         success: function (resp) {
           if (resp == 'MPC finished') {
-            console.log(resp);
+            document.getElementById('MPC-status').innerHTML = 'Status: The computation is finished!';
             document.getElementById('email-results').disabled = false;
             console.log('ready to stop calling checkComputationStatus');
             clearInterval(id);
           } else {
-            console.log(resp);
+            document.getElementById('MPC-status').innerHTML = 
+            'Status: The computation parties are performing the secure computation on auction data';
           }
         }  
       });
