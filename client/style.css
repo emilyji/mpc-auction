@@ -1,35 +1,88 @@
 body {
     font-family: 'Helvetica', serif;
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
+    background-color: #f1f1f1;
 }
 
-form {
+#page-info {
     display: inline-block;
-    width: 75%;
+    width: 50%;
+    padding: 30px;
+    background-color: white;
 }
 
-.container {
+#create-auction-form input, textarea {
+    width: 40%;
+    padding: 7px;
+    font-size: 15px;
+    margin: 10px;
+    vertical-align: top;
+    border-width: 1px;
+    background: #f1f1f1;
+}
+
+#create-auction-form label {
+    width: 25%;
+    text-align: right;
     display: inline-block;
-    width: 75%;
+    margin: 10px;
 }
-
-input{
-    width: 100%;
+#registration-form input, #login-form input {
+    width: 80%;
     padding: 15px;
     margin: 5px 0 22px 0;
     display: inline-block;
     border: none;
     background: #f1f1f1;
-    font-size: 20px;
+    font-size: 18px;
 }
 
-input[type=submit] {
-    width: 100%;
-    background-color: #767474;
+#registration-form input[type=submit], #login-form input[type=submit] {
+    width: 40%;
+    background-color: #7d7ca3;
     border: none;
     color: white;
-    padding: 16px 32px;
-    margin: 4px 2px;
-    border-radius: 10px;
+    padding: 10px 32px;
+    margin: 0px 2px;
+}
+
+#auction_id, #bid-submission-form input {
+    width: 15%;
+    padding: 7px;
+    display: inline-block;
+    border-width: 1px;
+    background: #f1f1f1;
+    font-size: 18px;
+}
+
+.button {
+    border: none;
+    color: white;
+    padding: 10px;
+    margin: 0px 2px;
+    font-size: 18px;
+}
+
+#bid-submit-button {
+    width: 15%;
+    background-color: #7d7ca3;
+}
+
+#update-config, #notify-registered-users, #email-results, #end-auction {
+    width: 40%;
+    background-color: #1b569e;
+}
+
+.row {
+    display: flex;
+}
+
+.column {
+    flex: 50%;
+    text-align: left;
+}
+
+#column-left {
+    padding: 0 0 0 20px;
 }

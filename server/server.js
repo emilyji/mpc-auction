@@ -272,7 +272,9 @@ app.post('/auction', function (req, res) {
 
 //Showing login page
 app.get('/login', function (req, res) {
-  res.sendFile(path.join(__dirname, '../client/views/login.html'));
+  queries.getCurrentAuctionInfo().then(function (data) {
+    res.render(path.join(__dirname, '../client/views/create'), {title: data.title});
+  });
 });
 
 //Handling user login

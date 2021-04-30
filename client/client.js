@@ -8,7 +8,7 @@
 // eslint-disable-next-line no-unused-vars
 function submit() {
   $('#connectButton').prop('disabled', true);
-  var computation_id = $('#computation_id').val();
+  var computation_id = 'test';
 
   var options = { party_count: config.party_count };
   options.onError = function (_, error) {

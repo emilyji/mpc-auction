@@ -2,6 +2,8 @@
 <head>
   <title>Manage Secure Auction</title>
 
+  <link rel='stylesheet' type='text/css' href='../style.css'>
+
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script type="text/javascript" src="../administratorController.js"></script>
   <script src="/config.js"></script>
@@ -20,37 +22,46 @@
 
 </head>
 <body>
-  <h2>Manage Auction</h2>
-    <p>Title: {{ title }}</p>
-    <p>Description: {{ description }}</p>
-    <p id="auction-id">ID: {{ auction_id }}</p>
-    <p>Registration deadline: {{ deadline }}</p>
-    <p>Auction start time: {{ start }}</p>
-    <p>Auction end time / bid submission deadline: {{ end }}</p>
+  <br>
+  <div id="page-info">
+    <h1>Manage Auction</h1>
+    <div class="row">
+      <div class="column" id="column-left">
+        <p><strong>Title:</strong> {{ title }}</p>
+        <p><strong>Description:</strong> {{ description }}</p>
+        <p id="auction-id"><strong>ID:</strong> {{ auction_id }}</p>
+      </div>
+      <div class="column" id="column-right">
+        <p><strong>Registration deadline:</strong> {{ deadline }}</p>
+        <p><strong>Auction start time:</strong> {{ start }}</p>
+        <p><strong>Auction end time / bid submission deadline:</strong> {{ end }}</p>
+      </div>
+    </div>
     <p id="registration-deadline" hidden>{{ deadline_time }}</p>
     <p id="auction-start-time" hidden>{{ start_time }}</p>
     <p id="bid-submission-deadline" hidden>{{ end_time }}</p>
-    <hr>
+    <br><hr><br>
     <form id="auction-manage">
-      <p>After the registration period ends, click the button below to update the configuration file with the maximum number of bidders that will participate in the auction. This step is necessary for securely computing the auction results.</p> 
-      <button type="button" id="update-config" onclick="updateConfigurationFile();" disabled>Update Configuration File</button>
+      <p>After the registration period ends, click the button below to update the configuration file with the maximum number of bidders that will participate in the auction. This step is necessary for securely computing the auction results.</p><br> 
+      <button type="button" class="button" id="update-config" onclick="updateConfigurationFile();" disabled>Update Configuration File</button>
       <p id="update-button-output"></p>
-
-      <hr>
+      
+      <br><hr><br>
       <p>After all computation parties have connected to the server, click the button below to notify the bidders that the auction is live. Every individual who registered will receive a link to the bid submission page.</p> 
-      <p id="compute-party-connection-status">Status: 0 computation parties are connected to the server</p>
-      <button type="button" id="notify-registered-users" onclick="notifyRegisteredUsers();" disabled>Notify Auction Participants</button>
+      <p id="compute-party-connection-status"><strong>Status:</strong> 0 computation parties are connected to the server</p><br>
+      <button type="button" class="button" id="notify-registered-users" onclick="notifyRegisteredUsers();" disabled>Notify Auction Participants</button>
       <p id="notify-button-output"></p>
       
-      <hr>
+      <br><hr><br>
       <p>After the secure computation finishes, click the button below to send the auction results to the bidders. The winner will receive an email with the second highest bid value, which is the price to be paid. All other participants will receive an email saying that they did not win the auction.</p> 
-      <p id="MPC-status">Status: The computation has not started yet</p>
-      <button type="button" id="email-results" onclick="emailAuctionResults();" disabled>Email Auction Results</button>
+      <p id="MPC-status"><strong>Status:</strong> The computation has not started yet</p><br>
+      <button type="button" class="button" id="email-results" onclick="emailAuctionResults();" disabled>Email Auction Results</button>
       <p id="email-results-output"></p>
 
-      <hr>
-      <p>After emailing the results to the bidders, click the button below to officially end this auction. You will be directed back to the Create Auction web page.</p>
-      <button type="button" id="end-auction" onclick="closeAuction();" disabled>End This Auction</button>
+      <br><hr><br>
+      <p>After emailing the results to the bidders, click the button below to officially end this auction. You will be directed back to the Create Auction web page.</p><br>
+      <button type="button" class="button" id="end-auction" onclick="closeAuction();" disabled>End This Auction</button>
    </form>
+  </div>
 </body>
 </html>

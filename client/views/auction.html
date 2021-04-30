@@ -12,22 +12,26 @@
 
   <!-- Contains Client MPC code -->
   <script type="text/javascript" src="../client-mpc.js"></script>
+
+  <link rel='stylesheet' type='text/css' href='../style.css'>
 </head>
 <body>
-  <p hidden id="email">{{ email }}</p>
-  <h1>{{ title }}</h1>
-  <h2>{{ description }}</h2>
-  <label for="computation_id">Computation ID</label>
-  <input id="computation_id" value="test"/><br/><br/>
-  <label for="auction_id">Auction ID</label>
-  <input id="auction_id" value={{auction_id}}><br/><br/>
-  <p>The bid submission deadline is {{ end }}. Please make sure to submit your bid before this time.</p> 
-  <br/><br/>
-  <hr/>
-  <h1>Submit your bid for {{ title }}</h1>
-  <label for="number">Input your bid</label><br><br>
-  <input id="number" pattern="[0-9]+"><br><br>
-  <button onclick="submit();" id="button">Bid</button><br/>
-  <div id="output"></div>
+  <br>
+  <div id="page-info">
+    <p hidden id="email">{{ email }}</p>
+    <h1>{{ title }}</h1>
+    <h2>{{ description }}</h2>
+    <label for="auction_id">Auction ID:</label>
+    <input id="auction_id" value={{auction_id}}><br/>
+    <p>The bid submission deadline is {{ end }}. Please make sure to submit your bid before this time.</p> 
+    <hr>
+    <br>
+    <form id="bid-submission-form">
+      <label for="number">Enter your bid:</label>
+      <input id="number" pattern="[0-9]+"><br><br><br>
+      <button onclick="submit();" id="bid-submit-button" class="button">Submit</button><br/>
+      <div id="output"></div>
+    </form>
+  <div>
 </body>
 </html>

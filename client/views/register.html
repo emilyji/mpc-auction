@@ -1,32 +1,36 @@
 <html>
 <head>
-<title> Signup Form</title>
-<link rel='stylesheet' type='text/css' href='../style.css'>
+    <title> Signup Form</title>
+    <link rel='stylesheet' type='text/css' href='../style.css'>
 </head>
 
 <body>
-    <form action="/" method="POST">
-        <h1>Sign Up for {{ title }}</h1>
-        <h3>Auction description: {{ description }}</h3>
-        <p><b>The registration deadline is {{ deadline }}. After this date, you will no longer be able to register for this auction.</b></p>
-        <hr>
-        <p>Please register for this auction by entering an email and a password, which you will use to log in to the bidding page once the auction is live. If you successfully register, you will be redirected to a success confirmation page.</p>
-        <p>The auction will begin at {{ start }}. At that time, you will receive an email with a link to the auction. You must submit your bid by {{ end }}.</p>
-        <label for="email"><b>Email</b></label>                      
-        <input class="box" type="text" name="email" id="email" 
-            placeholder="Enter Email" required/><br>
-        
-        <label for="password"><b>Password</b></label>
-        <input class="box" type="password" name="password" 
-            id="password" placeholder="Enter Password" required/><br>
+    <br>
+    <div id="page-info">
+        <div id="register-text">
+            <h1>Sign up for {{ title }}</h1>
+            <h3>Auction description: {{ description }}</h3>
+            <p><b>The registration deadline is {{ deadline }}. After this date, you will no longer be able to register for this auction.</b></p>
+            <hr>
+            <p>Please register for this auction by entering an email and a password, which you will use to log in to the bidding page once the auction is live. If you successfully register, you will be redirected to a success confirmation page.</p>
+            <p>The auction will begin at {{ start }}. At that time, you will receive an email with a link to the auction. You must submit your bid by {{ end }}.</p>
+        </div>
+        <form action="/" method="POST" id="registration-form">
+            <label for="email"><b>Email</b></label><br>                      
+            <input class="box" type="text" name="email" id="email" 
+                placeholder="Enter Email" required/><br>
+            
+            <label for="password"><b>Password</b></label><br> 
+            <input class="box" type="password" name="password" 
+                id="password" placeholder="Enter Password" required/><br>
 
-        <input class="box" type="hidden" name="auctionID" 
-            id="auctionID" value={{auction_id}}><br>
+            <input class="box" type="hidden" name="auctionID" 
+                id="auctionID" value={{auction_id}}><br>
 
-        <br>
-        <input type="submit" id="submitDetails"  
-            name="submitDetails" value="Submit" /><br>
-                      
-    </form>
+            <input type="submit" id="submitDetails"  
+                name="submitDetails" value="Register"/><br>
+                          
+        </form>
+    </div>
 </body>
 </html>
