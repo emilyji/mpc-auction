@@ -7,7 +7,7 @@ body {
 
 #page-info {
     display: inline-block;
-    width: 50%;
+    width: 55%;
     padding: 30px;
     background-color: white;
 }
@@ -15,11 +15,12 @@ body {
 #create-auction-form input, textarea {
     width: 40%;
     padding: 7px;
-    font-size: 15px;
+    font-size: 18px;
     margin: 10px;
     vertical-align: top;
     border-width: 1px;
     background: #f1f1f1;
+    font-family: 'Helvetica', serif;
 }
 
 #create-auction-form label {
@@ -28,6 +29,7 @@ body {
     display: inline-block;
     margin: 10px;
 }
+
 #registration-form input, #login-form input {
     width: 80%;
     padding: 15px;
@@ -38,7 +40,7 @@ body {
     font-size: 18px;
 }
 
-#registration-form input[type=submit], #login-form input[type=submit] {
+#registration-form input[type=submit], #login-form input[type=submit], #create-auction-form input[type=submit] {
     width: 40%;
     background-color: #7d7ca3;
     border: none;
@@ -47,7 +49,7 @@ body {
     margin: 0px 2px;
 }
 
-#auction_id, #bid-submission-form input {
+#bid-submission-form input {
     width: 15%;
     padding: 7px;
     display: inline-block;

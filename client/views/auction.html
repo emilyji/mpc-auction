@@ -21,14 +21,13 @@
     <p hidden id="email">{{ email }}</p>
     <h1>{{ title }}</h1>
     <h2>{{ description }}</h2>
-    <label for="auction_id">Auction ID:</label>
-    <input id="auction_id" value={{auction_id}}><br/>
-    <p>The bid submission deadline is {{ end }}. Please make sure to submit your bid before this time.</p> 
+    <p id="auction_id"><strong>Auction ID:</strong> {{ auction_id }}</p>
+    <p>The bid submission deadline is <strong>{{ end }}</strong>. Please make sure to submit your bid before this time.</p> 
     <hr>
     <br>
     <form id="bid-submission-form">
-      <label for="number">Enter your bid:</label>
-      <input id="number" pattern="[0-9]+"><br><br><br>
+      <label for="number"><strong>Enter your bid:</strong></label>
+      $ <input id="number" pattern="[0-9]+"><br><br><br>
       <button onclick="submit();" id="bid-submit-button" class="button">Submit</button><br/>
       <div id="output"></div>
     </form>
