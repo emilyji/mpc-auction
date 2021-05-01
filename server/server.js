@@ -180,7 +180,9 @@ app.post('/get_computation_status', function (req, res) {
     if (data == 'the auction results have not been computed yet') {
       res.send('MPC has not finished');
     } else {
-      res.send('MPC finished');
+      queries.getUserByPartyID(data._id, data.winner_id).then(function (winner_data) {
+        res.send({winner: winner_data.username, second_highest_bid: data.second_highest_bid});
+      });
     }
   });
 });
@@ -273,7 +275,7 @@ app.post('/auction', function (req, res) {
 //Showing login page
 app.get('/login', function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
-    res.render(path.join(__dirname, '../client/views/create'), {title: data.title});
+    res.render(path.join(__dirname, '../client/views/login'), {title: data.title});
   });
 });
 

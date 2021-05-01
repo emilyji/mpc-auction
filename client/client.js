@@ -7,7 +7,6 @@
 
 // eslint-disable-next-line no-unused-vars
 function submit() {
-  $('#connectButton').prop('disabled', true);
   var computation_id = 'test';
 
   var options = { party_count: config.party_count };
@@ -34,7 +33,6 @@ function submit() {
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
-    $('#button').attr('disabled', false); 
     $('#output').append('<p>Connected to the compute parties!</p>');
     var email = $('#email').html();
     updateInputPartyID(jiff['id'], email);
@@ -44,7 +42,7 @@ function submit() {
     if (isNaN(input)) {
       $('#output').append("<p class='error'>Input a valid number!</p>");
     } else {
-      $('#button').attr('disabled', true);
+      $('#bid-submit-button').attr('disabled', true);
       $('#output').append('<p>Starting...</p>');
       // eslint-disable-next-line no-undef
       var promise = mpc.compute(input);

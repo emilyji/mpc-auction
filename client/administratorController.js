@@ -163,14 +163,17 @@ function checkAuctionEnd() {
         contentType: 'application/json',
         data: JSON.stringify({auctionID: auctionID}),
         success: function (resp) {
-          if (resp == 'MPC finished') {
+          if (resp == 'MPC has not finished') {
+            document.getElementById('MPC-status').innerHTML = 
+            'Status: The computation parties are securely computing the auction results';
+          } else {
+            console.log(resp);
             document.getElementById('MPC-status').innerHTML = 'Status: The computation is finished!';
+            document.getElementById('auction-winner').innerHTML = 'Auction winner: '+resp.winner;
+            document.getElementById('auction-price').innerHTML = 'Second-highest bid: $'+resp.second_highest_bid;
             document.getElementById('email-results').disabled = false;
             console.log('ready to stop calling checkComputationStatus');
             clearInterval(id);
-          } else {
-            document.getElementById('MPC-status').innerHTML = 
-            'Status: The computation parties are performing the secure computation on auction data';
           }
         }  
       });

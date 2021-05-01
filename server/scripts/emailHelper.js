@@ -21,7 +21,7 @@ module.exports.sendNotificationEmails = function (title, description, auction_id
         subject: title,
         html: `<h1>`+title+`</h1>
               <h2>`+description+`</h2>
-              <p>Thank you for registering. The auction is now live! Your bid must be submitted by `+auction_end+`.</p>
+              <p>Thank you for registering. The auction is now live! Your bid must be submitted before `+auction_end+`.</p>
               <p>Please click the following link to submit your bid.</p>
               <a href=https://localhost:8443/login>Click here</a>`,
       };
@@ -47,7 +47,7 @@ module.exports.emailAuctionWinner = function (auction_id, title, party_id, secon
         to: winnerEmail,
         subject: title + ' Result',
         html: `<h1>Congratulations! You are the winner of `+title+`.</h1>
-              <h2>The value of the second highest bid, which is the price that you must pay, is $`+second_highest_bid+`.</h2>`,
+              <h2>The value of the second-highest bid, which is the price that you must pay, is $`+second_highest_bid+`.</h2>`,
       };
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {

@@ -176,17 +176,18 @@ module.exports.getCurrentAuctionInfo = function () {
           resolve(message);
         }
         else {
-          var dateString = new Date(data.registration_deadline).toUTCString();
-          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          var options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
+                        hour: '2-digit', minute: '2-digit', timeZoneName: 'short'};
+
+          var dateString = new Date(data.registration_deadline).toLocaleTimeString('en-US', options);
           data.registration_deadline_string = dateString;
 
-          dateString = new Date(data.auction_start).toUTCString();
-          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          dateString = new Date(data.auction_start).toLocaleTimeString('en-US', options);
           data.auction_start_string = dateString;
 
-          dateString = new Date(data.auction_end).toUTCString();
-          dateString = dateString.split(' ').slice(0, 5).join(' ');
+          dateString = new Date(data.auction_end).toLocaleTimeString('en-US', options);
           data.auction_end_string = dateString;
+
           resolve(data);
         }
       }
