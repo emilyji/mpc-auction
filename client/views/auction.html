@@ -21,6 +21,7 @@
     <p hidden id="email">{{ email }}</p>
     <h1>{{ title }}</h1>
     <h2>{{ description }}</h2>
+    <img src="data:{{ img.contentType }};base64,{{ img.data }}">
     <p id="auction_id"><strong>Auction ID:</strong> {{ auction_id }}</p>
     <p>The bid submission deadline is <strong>{{ end }}</strong>. Please make sure to submit your bid <strong>before</strong> this time.</p> 
     <hr>

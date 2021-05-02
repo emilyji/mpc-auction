@@ -117,13 +117,13 @@ function checkAuctionReadiness() {
           var connectedCPcount = Object.keys(resp).length;
           if (connectedCPcount == config.compute_parties.length) {
             document.getElementById('compute-party-connection-status').innerHTML = 
-            'Status: All computation parties are successfully connected to the server!';
+            'Status: All compute parties are successfully connected to the server!';
             document.getElementById('notify-registered-users').disabled = false;
             console.log('ready to stop calling checkAuctionReadiness');
             clearInterval(id);
           } else if (connectedCPcount > 0) {
             document.getElementById('compute-party-connection-status').innerHTML = 
-            'Status: '+connectedCPcount+' out of '+config.compute_parties.length+' computation parties are connected to the server';
+            'Status: '+connectedCPcount+' out of '+config.compute_parties.length+' compute parties are connected to the server';
           }
         }  
       });
@@ -165,7 +165,7 @@ function checkAuctionEnd() {
         success: function (resp) {
           if (resp == 'MPC has not finished') {
             document.getElementById('MPC-status').innerHTML = 
-            'Status: The computation parties are securely computing the auction results';
+            'Status: The compute parties are securely computing the auction results';
           } else {
             console.log(resp);
             document.getElementById('MPC-status').innerHTML = 'Status: The computation is finished!';

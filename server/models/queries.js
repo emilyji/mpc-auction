@@ -117,12 +117,13 @@ module.exports.setNotifiedTrue = function (auction_id, email) {
   });
 }
 
-module.exports.insertAuctionInfo = function (auction_id, title, description, 
+module.exports.insertAuctionInfo = function (auction_id, title, description, img,
                                             registration_deadline, auction_start, auction_end) {
   var auctionInfo = new Auction({
     _id: auction_id,
     title: title,
     description: description,
+    img: img,
     registration_deadline: registration_deadline,
     auction_start: auction_start,
     auction_end: auction_end,
@@ -187,6 +188,10 @@ module.exports.getCurrentAuctionInfo = function () {
 
           dateString = new Date(data.auction_end).toLocaleTimeString('en-US', options);
           data.auction_end_string = dateString;
+
+          var img_to_send = data.img;
+          var base64data = img_to_send.data.toString('base64');
+          data.img.data = base64data;
 
           resolve(data);
         }

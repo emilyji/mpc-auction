@@ -49,6 +49,10 @@ body {
     margin: 0px 2px;
 }
 
+#create-auction-form input[type=submit] {
+    background-color: #1b569e;
+}
+
 #bid-submission-form input {
     width: 15%;
     padding: 7px;
@@ -87,4 +91,10 @@ body {
 
 #column-left {
     padding: 0 0 0 20px;
+}
+
+img {
+    width: 30%;
+    height: auto;
+    margin: auto;
 }

@@ -12,6 +12,7 @@ var path = require('path');
 const {v4 : uuidv4} = require('uuid');
 const updateConfig = require('./scripts/updateConfig');
 const emailHelper = require('./scripts/emailHelper');
+const multer = require('multer');
 
 // Server setup
 var express = require('express');
@@ -58,6 +59,13 @@ passport.use(new LocalStrategy({
 ));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+const storage = multer.diskStorage({
+  destination: function (req, res, cb) {
+    cb(null, path.join(__dirname + '/uploads'));
+  }
+});
+const upload = multer({ storage: storage });
 
 // Read configuration
 var config = './config.json';
@@ -131,10 +139,14 @@ app.get('/create-auction', function (req, res) {
   });
 }); 
 
-app.post('/create-auction', function (req, res) {
+app.post('/create-auction', upload.single('image'), (req, res, next) => {
   const auctionID = uuidv4();
   console.log(req.body);
-  var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription,
+  var img = {
+    data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+    contentType: 'image/png'
+  };
+  var promise = queries.insertAuctionInfo(auctionID, req.body.auctionTitle, req.body.auctionDescription, img,
                                           req.body.auctionRegistrationDeadline, req.body.auctionStart, req.body.auctionEnd);
   promise.then(function () {
     console.log('Successfully added auction info to database', req.body);
@@ -146,7 +158,7 @@ app.get('/manage', function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     console.log(data);
     res.render(path.join(__dirname, '../client/views/manage'), 
-              {title: data.title, description: data.description, deadline: data.registration_deadline_string,
+              {title: data.title, description: data.description, img: data.img, deadline: data.registration_deadline_string,
               auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string, 
               deadline_time: data.registration_deadline, start_time: data.auction_start, end_time: data.auction_end});
   });
@@ -200,7 +212,6 @@ app.post('/email_auction_results', function (req, res) {
 app.post('/close_auction', function (req, res) {
   queries.updateAuctionStatus(req.body.auctionID, 'CLOSED').then(function () {
     console.log('set auction status to CLOSED');
-    assignedCompute = {};
     assignedInput = {};
     res.redirect('/create-auction');
   });
@@ -221,7 +232,7 @@ app.get('/', function (req,res) {
         } else {
           console.log(data);
           res.render(path.join(__dirname, '../client/views/register'), 
-                    {title: data.title, description: data.description, deadline: data.registration_deadline_string,
+                    {title: data.title, description: data.description, img: data.img, deadline: data.registration_deadline_string,
                     auction_id: data._id, start: data.auction_start_string, end: data.auction_end_string});
         }
       });
@@ -254,7 +265,7 @@ app.get('/auction', isLoggedIn, function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     res.render(path.join(__dirname, '../client/views/auction'), 
               {email: req.user.username, title: data.title, description: data.description,
-               auction_id: data._id, end: data.auction_end_string});
+               img: data.img, auction_id: data._id, end: data.auction_end_string});
   });
 });
 

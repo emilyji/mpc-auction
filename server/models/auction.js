@@ -3,6 +3,7 @@ const AuctionSchema = new mongoose.Schema({
 	_id: String,
 	title: String,
 	description: String,
+	img: {data: Buffer, contentType: String},
     registration_deadline: Date,
     auction_start: Date,
     auction_end: Date,

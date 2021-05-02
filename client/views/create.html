@@ -15,12 +15,15 @@
     </header>
     <hr>
     <h2>Create a new auction</h2>
-    <form action="/create-auction" method="POST" id="create-auction-form">
+    <form action="/create-auction" method="POST" id="create-auction-form" enctype="multipart/form-data">
       <label for="auctionTitle"><strong>Auction title:</strong></label>
       <input type="text" id="auctionTitle" name="auctionTitle">
       <br><br>
       <label for="auctionDescription"><strong>Auction description:</strong></label>
       <textarea type="text" id="auctionDescription" name="auctionDescription" rows="4" cols="50"></textarea>
+      <br><br>
+      <label for="image"><strong>Upload Image:</strong></label>
+      <input type="file" id="image" name="image" accept="image/png, image/jpeg">
       <br><br>
       <label for="auctionRegistrationDeadline"><strong>Bidder registration deadline:</strong></label>
       <input type="datetime-local" id="auctionRegistrationDeadline" name="auctionRegistrationDeadline">
