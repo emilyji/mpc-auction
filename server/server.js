@@ -135,7 +135,11 @@ app.get('/config.js', function (req, res) {
 
 app.get('/create-auction', function (req, res) {
   queries.clearUsers().then(function () {
-    res.render(path.join(__dirname, '../client/views/create'));
+    queries.clearAuctions().then(function () {
+      assignedInput = {};
+      assignedCompute = {};
+      res.render(path.join(__dirname, '../client/views/create'));
+    });
   });
 }); 
 
@@ -269,7 +273,7 @@ app.get('/auction', isLoggedIn, function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     res.render(path.join(__dirname, '../client/views/auction'), 
               {email: req.user.username, title: data.title, description: data.description,
-               img: data.img, auction_id: data._id, end: data.auction_end_string});
+               img: data.img, auction_id: data._id, end: data.auction_end_string, end_time: data.auction_end});
   });
 });
 

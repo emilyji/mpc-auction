@@ -46,7 +46,7 @@ function submit() {
       $('#output').append('<p>You may now close this web page.</p>');
 
       // eslint-disable-next-line no-undef
-      var promise = mpc.compute(input);
+      var promise = mpc.compute_IP(input);
     }
   });
 }

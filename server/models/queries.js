@@ -241,3 +241,15 @@ module.exports.getAuctionResults = function (auction_id) {
     });
   });
 }
+
+module.exports.clearAuctions = function () {
+  return new Promise(function (resolve, reject) {
+    Auction.deleteMany({}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}

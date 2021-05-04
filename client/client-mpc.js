@@ -44,4 +44,17 @@
 
     return promise;
   };
+  exports.compute_IP = function (input, jiff_instance_) {
+    var jiff_instance = __jiff_instance;
+    if (jiff_instance_) {
+      jiff_instance = jiff_instance_;
+    }
+
+    // Share with compute parties
+    jiff_instance.share(input, null, config.compute_parties, config.input_parties);
+
+    jiff_instance.disconnect(true, true);
+    
+    return null;
+  };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
