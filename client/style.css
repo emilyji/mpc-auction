@@ -75,7 +75,12 @@ body {
     background-color: #7d7ca3;
 }
 
-#update-config, #notify-registered-users, #email-results, #end-auction {
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#update-config, #notify-registered-users, #email-results, #email-results-sale-price, #end-auction {
     width: 40%;
     background-color: #1b569e;
 }

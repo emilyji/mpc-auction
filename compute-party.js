@@ -71,7 +71,6 @@ var compute = function () {
     var promise = jiffClient.open_array(results, all_parties);
 
     promise.then(function (output) {
-      console.log('Final output is: ', output);
       jiffClient.disconnect(true, true);
     });
   });

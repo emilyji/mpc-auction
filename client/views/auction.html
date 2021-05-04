@@ -22,13 +22,13 @@
     <h1>{{ title }}</h1>
     <h2>{{ description }}</h2>
     <img src="data:{{ img.contentType }};base64,{{ img.data }}">
-    <p id="auction_id"><strong>Auction ID:</strong> {{ auction_id }}</p>
+    <p id="auction_id" hidden><strong>Auction ID:</strong> {{ auction_id }}</p>
     <p>The bid submission deadline is <strong>{{ end }}</strong>. Please make sure to submit your bid <strong>before</strong> this time.</p> 
     <hr>
     <br>
     <div id="bid-submission-form">
       <label for="number"><strong>Enter your bid:</strong></label>
-      $ <input id="number" pattern="[0-9]+"><br><br><br>
+      $ <input id="number" pattern="[0-9]+(.[0-9]+|)"><br><br><br>
       <button onclick="submit();" id="bid-submit-button" class="button">Submit</button><br/>
       <div id="output"></div>
     </div>

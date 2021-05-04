@@ -17,22 +17,22 @@
     <h2>Create a new auction</h2>
     <form action="/create-auction" method="POST" id="create-auction-form" enctype="multipart/form-data">
       <label for="auctionTitle"><strong>Auction title:</strong></label>
-      <input type="text" id="auctionTitle" name="auctionTitle">
+      <input type="text" id="auctionTitle" name="auctionTitle" required>
       <br><br>
       <label for="auctionDescription"><strong>Auction description:</strong></label>
-      <textarea type="text" id="auctionDescription" name="auctionDescription" rows="4" cols="50"></textarea>
+      <textarea type="text" id="auctionDescription" name="auctionDescription" rows="4" cols="50" required></textarea>
       <br><br>
       <label for="image"><strong>Upload Image:</strong></label>
-      <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+      <input type="file" id="image" name="image" accept="image/png, image/jpeg" required>
       <br><br>
       <label for="auctionRegistrationDeadline"><strong>Bidder registration deadline:</strong></label>
-      <input type="datetime-local" id="auctionRegistrationDeadline" name="auctionRegistrationDeadline">
+      <input type="datetime-local" id="auctionRegistrationDeadline" name="auctionRegistrationDeadline" required>
       <br><br>
       <label for="auctionStart"><strong>Auction start time:</strong></label>
-      <input type="datetime-local" id="auctionStart" name="auctionStart">
+      <input type="datetime-local" id="auctionStart" name="auctionStart" required>
       <br><br>
       <label for="auctionEnd"><strong>Auction end time:</strong></label>
-      <input type="datetime-local" id="auctionEnd" name="auctionEnd">
+      <input type="datetime-local" id="auctionEnd" name="auctionEnd" required>
       <br><br><br>
       <input type="submit" id="createAuction" name="createAuction" value="Create"/>
     </form>

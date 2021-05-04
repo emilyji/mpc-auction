@@ -165,6 +165,10 @@ app.get('/manage', function (req, res) {
 });
 
 // The following do not serve files / are not URLs
+app.get('/get_config', function (req, res) {
+  res.send(JSON.parse(JSON.stringify(config)));
+}); 
+
 app.post('/update_config', function (req, res) {
   updateConfig.editInputParties(req.body.auctionID);
   res.send('Successfully updated config!');
@@ -203,7 +207,7 @@ app.post('/email_auction_results', function (req, res) {
   queries.getCurrentAuctionInfo().then(function (data) {
     emailHelper.emailAuctionWinner(data._id, data.title, data.winner_id, data.second_highest_bid);
     console.log('Successfully emailed the auction winner');
-    emailHelper.emailAuctionLosers(data._id, data.title, data.winner_id);
+    emailHelper.emailAuctionLosers(data._id, data.title, data.winner_id, req.body.includeSalePrice, data.second_highest_bid);
     console.log('Successfully emailed the auction losers');
     res.send('Successfully sent result emails to the bidders who participated in the auction!');
   });

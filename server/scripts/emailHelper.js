@@ -66,7 +66,7 @@ module.exports.emailAuctionWinner = function (auction_id, title, party_id, secon
   });
 }
 
-module.exports.emailAuctionLosers = function (auction_id, title, winner_party_id) {
+module.exports.emailAuctionLosers = function (auction_id, title, winner_party_id, include_sale_price, second_highest_bid) {
   queries.getUsersPartyIDNE(auction_id, winner_party_id).then(function (losers) {
     async.each(losers, function (user, callback) { 
       if (user.notified_auction_outcome != true) {
@@ -77,6 +77,10 @@ module.exports.emailAuctionLosers = function (auction_id, title, winner_party_id
           subject: title + ' Result',
           html: `<h1>Thank you for participating in `+title+`. I am sorry to inform you that you did not win the auction.</h1>`,
         };
+        if (include_sale_price == true) {
+          mailOptions.html = `<h1>Thank you for participating in `+title+`. I am sorry to inform you that you did not win the auction.</h1>
+          <h2>The item will be sold at $`+second_highest_bid+`.</h2>`;
+        }
         transporter.sendMail(mailOptions, function(error, info) {
           if (error) {
             console.log(error);

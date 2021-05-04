@@ -8,7 +8,7 @@ const queries = require('../models/queries.js');
 module.exports.editInputParties = function(auction_id) {
   queries.totalRegisteredUsers(auction_id).then(function (count) {
     var inputParties = [];
-    var ID = 4;
+    var ID = config.compute_parties.length + 1;
     for(var i = 0; i < count + 1; i++) {
       inputParties[i]= ID;
       ID++;

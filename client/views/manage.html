@@ -6,7 +6,6 @@
 
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script type="text/javascript" src="../administratorController.js"></script>
-  <script src="/config.js"></script>
   <script src="/dist/jiff-client.js"></script>
   <script src="/lib/ext/jiff-client-restful.js"></script>
   <script type="text/javascript" src="../client-mpc.js"></script>
@@ -54,11 +53,15 @@
       <p id="notify-button-output"></p>
       
       <br><hr><br>
-      <p>After the secure computation finishes, click the button below to send the auction results to the bidders. The winner will receive an email with the second-highest bid value, which is the price to be paid. All other participants will receive an email saying that they did not win the auction.</p> 
+      <p>After the secure computation finishes, click <strong>one</strong> of the buttons below to send the auction results to the bidders.</p> 
       <p id="MPC-status"><strong>Status:</strong> The computation has not started yet</p>
       <p id="auction-winner"></p>
       <p id="auction-price"></p>
-      <button type="button" class="button" id="email-results" onclick="emailAuctionResults();" disabled>Email Auction Results</button>
+      <p>This is the default option. The winner will receive an email with the second-highest bid value, which is the sale price. All other participants will receive an email saying that they did not win the auction.</p>
+      <button type="button" class="button" id="email-results" onclick="emailAuctionResults(false);" disabled>Email Auction Results</button>
+      <br><br>
+      <p>Only click the following button if you would like to include the sale price in the email sent to the auction losers.</p>
+      <button type="button" class="button" id="email-results-sale-price" onclick="emailAuctionResults(true);" disabled>Include Sale Price</button>
       <p id="email-results-output"></p>
 
       <br><hr><br>

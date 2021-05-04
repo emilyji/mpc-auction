@@ -33,17 +33,18 @@ function submit() {
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
-    $('#output').append('<p>Connected to the compute parties!</p>');
     var email = $('#email').html();
     updateInputPartyID(jiff['id'], email);
 
-    var input = parseInt($('#number').val());
+    var input = parseFloat($('#number').val());
 
     if (isNaN(input)) {
       $('#output').append("<p class='error'>Input a valid number!</p>");
     } else {
       $('#bid-submit-button').attr('disabled', true);
-      $('#output').append('<p>Starting...</p>');
+      $('#output').append('<p>Your bid was successfully submitted! You will receive an email about the results soon after the auction ends.</p>');
+      $('#output').append('<p>You may now close this web page.</p>');
+
       // eslint-disable-next-line no-undef
       var promise = mpc.compute(input);
     }
