@@ -1,7 +1,16 @@
 {
   "party_count": 7,
-  "compute_parties": [1, 2, 3],
-  "input_parties": [4, 5, 6, 7],
+  "compute_parties": [
+    1,
+    2,
+    3
+  ],
+  "input_parties": [
+    4,
+    5,
+    6,
+    7
+  ],
   "preprocessing": false,
   "____COMMENT___": [
     "/*",
