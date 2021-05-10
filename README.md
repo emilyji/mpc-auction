@@ -56,13 +56,13 @@ After starting the HTTPS server, follow the steps below to operate the applicati
 
 ### As a compute party
 
-The auction system currently consists of 3 compute parties, as configured in [config.json](server/config.json)
+The auction system currently consists of 3 compute parties, as configured in [config.json](server/config.json). (The number of compute parties can be changed by removing or adding ID values to the ```compute_parties``` array in the config.json file.)
 
 JIFF requires the number of input parties to be specified before the MPC begins. This means that the compute parties can only be started **after** the registration deadline passes and the auction administrator updates config.json with the number of registered participants.
 
 Open a new terminal window, navigate to the ```mpc-auction/``` directory, and use the following command to run a single compute party:
 ```
-node compute-party.js ./server/config.json test
+node compute-party.js ./server/config.json
 ```
 
 In a real deployment environment, each compute party would be run on a separate machine. For local development, however, they can all be run on the same machine.
